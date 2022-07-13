@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.target=LoginPage
+comment1.params=loginDetailGLB
+comment1.target=LoginPage(java.util.HashMap)
+comment2.params=e
+comment2.target=void\ actionPerformed(java.awt.event.ActionEvent)
+numComments=3
