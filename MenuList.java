@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.JOptionPane;
 
@@ -27,4 +29,21 @@ public class MenuList {
             JOptionPane.showMessageDialog(null, "errrrooorrrr");
         }
     }
+
+    // public void readarraytofile(){
+    //     wholeMenu = new FoodItem[10000];
+    //     position = 0;
+        
+    //     try{
+    //         BufferedReader reader = new BufferedReader(new FileReader("AllOrders.txt"));
+    //         String tempLine = reader.readLine();
+    //         while(tempLine != null){
+    //             String[] splitData = tempLine.split(",");
+    //             FoodItem tempFood = new FoodItem();
+
+    //         }
+    //     } catch(Exception e){
+    //         e.printStackTrace();  
+    //     }
+    // }
 }

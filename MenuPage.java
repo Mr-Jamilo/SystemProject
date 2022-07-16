@@ -4,9 +4,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class MenuPage {
     JFrame frame = new JFrame();
@@ -15,18 +12,17 @@ public class MenuPage {
     JTable demoTable = new JTable(model);
     JScrollPane demoTableScroll = new JScrollPane(demoTable);
     JLabel title = new JLabel("Menu");
-    BufferedReader reader = null;
     String file = "menu.txt";
     String line = "";
     MenuList menuList = new MenuList();
     FoodItem food = new FoodItem();
-   
+    
     MenuPage(){
         title.setBounds(380, 10, 70, 30);
         title.setFont(new Font(null,Font.BOLD,20));
         frame.add(title);    
         
-        demoTableScroll.setBounds(30,80,400,350); 
+        demoTableScroll.setBounds(30,80,400,350);
         frame.add(demoTableScroll);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,81 +34,49 @@ public class MenuPage {
     }
     
     public void readMenu(){ 
-        System.out.println("reading menu...");
-        String file = "menu.csv";
-        BufferedReader reader = null;
-        String line = "";
-        String tempValue = "";
-        int count = 0;
+        String[] row1 = {"1","Salt and Pepper Spare Ribs","4.8"};
+        String[] row2 = {"2","Salt and Pepper Chicken Wings","4.8"};
+        String[] row3 = {"3","Sesame prawns on Toast","2.2"};
+        String[] row4 = {"4","Chicken Wings in Fruity O.K Sauce","3.5"};
+        String[] row5 = {"5","Prawn Cocktail","2.2"};
         
-        try {
-            System.out.println("reading...");
-            reader = new BufferedReader(new FileReader(file));
-            while((line = reader.readLine()) != null){
-                int charCount = line.length();
-                for(int tempcharCount = 0;tempcharCount<charCount;tempcharCount++){
-                    String[] data = new String[3];
-                    char currentChar = line.charAt(tempcharCount);
-                    if (currentChar == ','){
-                        tempcharCount++;
-                        currentChar = line.charAt(tempcharCount);
-                        tempValue = tempValue + currentChar;  
-                    }
-                    else{    
-                        tempValue = tempValue + currentChar;
-                    }
+        model.addRow(row1);
+        model.addRow(row2);
+        model.addRow(row3);
+        model.addRow(row4);
+        model.addRow(row5);
 
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        } 
-        
-        
-        
-        
-        
-        
+
+
+        // String file = "menu.csv";
+        // BufferedReader reader = null;
+        // String line = "";
+        // String tempValue = "";
+        // int count = 0;
         
         // try {
         //     reader = new BufferedReader(new FileReader(file));
         //     while((line = reader.readLine()) != null){
-        //         String[] row = line.split(",");
-        //         //System.out.println(String index);
-                
-        //          for(String index : row){                ///(prints file)
-        //             System.out.printf("%-10s", index);
+        //         int charCount = line.length();
+        //         for(int tempcharCount = 0;tempcharCount<charCount;tempcharCount++){
+        //             String[] data = new String[3];
+        //             char currentChar = line.charAt(tempcharCount);
+        //             if (currentChar == ','){
+        //                 tempcharCount++;
+        //                 currentChar = line.charAt(tempcharCount);
+        //                 tempValue = tempValue + currentChar;
+        //                 data[count] = tempValue;
+        //                 System.out.println(data[count]);
+        //                 count++;
+        //             }
+        //             else{    
+        //                 tempValue = tempValue + currentChar;
+        //             }
         //         }
-        //         System.out.println();
         //     }
         // }
-        // catch(Exception e) {
-        //     System.out.println("error");
-        // }
-        // finally {
-        //     try {
-        //         reader.close();
-        //     } catch (IOException e) {
-        //         // TODO Auto-generated catch block
-        //         e.printStackTrace();
-        //     }
+        // catch (Exception e) {
+        //     e.printStackTrace();
         // }
     }
-    
-    
-    // public void readMenu(){
-    //     int FoodNum = MenuList.position;
-    //     for(int i=0; i<FoodNum;i++){
-    //         FoodItem tempfood = MenuList.wholeMenu[i];
-    //         String[] fooddata = new String[3];
-            
-    //         String tempID = (tempfood.foodID) + "";
-    //         fooddata[0] = tempID;
-    //         fooddata[1] = tempfood.foodName;
-    //         String tempCost = (tempfood.foodCost) + "";
-    //         fooddata[2] = tempCost;
-    //         model.addRow(fooddata);
-    //     }
-    // }
 }
