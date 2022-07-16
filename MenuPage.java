@@ -1,9 +1,16 @@
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
+import java.awt.Color;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class MenuPage {
     JFrame frame = new JFrame();
@@ -16,21 +23,43 @@ public class MenuPage {
     String line = "";
     MenuList menuList = new MenuList();
     FoodItem food = new FoodItem();
+    JTextField userSearch = new JTextField();
+    TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
+    JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
+    JPanel box = new JPanel();
     
     MenuPage(){
-        title.setBounds(380, 10, 70, 30);
-        title.setFont(new Font(null,Font.BOLD,20));
-        frame.add(title);    
         
-        demoTableScroll.setBounds(30,80,400,350);
-        frame.add(demoTableScroll);
+        
+        box.setBounds(500,80,250,300);
+        box.setBorder(BorderFactory.createLineBorder(Color.black));
+        frame.add(box);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800,600);
         frame.setLayout(null);
         frame.setVisible(true);
 
+        initComponentsintoFrame();
+        initComponentsintoPanel();
         readMenu();
+    }
+    
+    public void initComponentsintoPanel(){
+
+    }
+
+    public void initComponentsintoFrame(){
+        title.setBounds(380, 10, 70, 30);
+        title.setFont(new Font(null,Font.BOLD,20));
+        frame.add(title);    
+        
+        userSearch.setBounds(30,50,200,20);
+        searchPrompt.setForeground(Color.gray); 
+        frame.add(userSearch);
+        
+        demoTableScroll.setBounds(30,80,400,350);
+        frame.add(demoTableScroll);
     }
     
     public void readMenu(){ 
