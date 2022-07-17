@@ -9,8 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 import java.awt.Color;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 public class MenuPage {
     JFrame frame = new JFrame();
@@ -45,10 +43,7 @@ public class MenuPage {
         readMenu();
     }
     
-    public void initComponentsintoPanel(){
-
-    }
-
+    
     public void initComponentsintoFrame(){
         title.setBounds(380, 10, 70, 30);
         title.setFont(new Font(null,Font.BOLD,20));
@@ -62,6 +57,10 @@ public class MenuPage {
         frame.add(demoTableScroll);
     }
     
+    public void initComponentsintoPanel(){
+        
+    }
+
     public void readMenu(){ 
         String[] row1 = {"1","Salt and Pepper Spare Ribs","4.8"};
         String[] row2 = {"2","Salt and Pepper Chicken Wings","4.8"};
