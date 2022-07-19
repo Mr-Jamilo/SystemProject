@@ -12,19 +12,23 @@ import java.awt.Color;
 
 public class MenuPage {
     JFrame frame = new JFrame();
+    JLabel title = new JLabel("Menu");
+    JTextField userSearch = new JTextField();
+    TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
+    
     String[] headings= {"Food ID","Food Name","Cost"};      
     DefaultTableModel model = new DefaultTableModel(headings,0);
     JTable demoTable = new JTable(model);
     JScrollPane demoTableScroll = new JScrollPane(demoTable);
-    JLabel title = new JLabel("Menu");
+    
+    JPanel box = new JPanel();
+    JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
+    JLabel custOrderlbl = new JLabel("YOUR ORDER");
+    //////////////////////
     String file = "menu.txt";
     String line = "";
     MenuList menuList = new MenuList();
     FoodItem food = new FoodItem();
-    JTextField userSearch = new JTextField();
-    TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
-    JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
-    JPanel box = new JPanel();
     
     MenuPage(){
         
@@ -55,10 +59,17 @@ public class MenuPage {
         
         demoTableScroll.setBounds(30,80,400,350);
         frame.add(demoTableScroll);
+
+        confirmOrder.setBounds(500,390,250,40);
+        confirmOrder.setFont(new Font(null,Font.BOLD,19));
+        confirmOrder.setFocusable(false);
+        frame.add(confirmOrder);
     }
     
     public void initComponentsintoPanel(){
-        
+        custOrderlbl.setBounds(550, 90, 100, 60);
+        custOrderlbl.setFont(new Font(null,Font.BOLD,15));
+        box.add(custOrderlbl);
     }
 
     public void readMenu(){ 
