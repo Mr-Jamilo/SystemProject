@@ -13,6 +13,8 @@ import javax.swing.table.*;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class MenuPage implements MouseListener{
     JFrame frame = new JFrame();
@@ -87,51 +89,23 @@ public class MenuPage implements MouseListener{
         
     }
     
-    public void readMenu(){ //hardcoded menu
-        String[] row1 = {"1","Salt and Pepper Spare Ribs","4.8"};
-        String[] row2 = {"2","Salt and Pepper Chicken Wings","4.8"};
-        String[] row3 = {"3","Sesame prawns on Toast","2.2"};
-        String[] row4 = {"4","Chicken Wings in Fruity O.K Sauce","3.5"};
-        String[] row5 = {"5","Prawn Cocktail","2.2"};
-        
-        model.addRow(row1);
-        model.addRow(row2);
-        model.addRow(row3);
-        model.addRow(row4);
-        model.addRow(row5);
-
-
-
-        // String file = "menu.csv";
-        // BufferedReader reader = null;
-        // String line = "";
-        // String tempValue = "";
-        // int count = 0;
-        
-        // try {
-        //     reader = new BufferedReader(new FileReader(file));
-        //     while((line = reader.readLine()) != null){
-        //         int charCount = line.length();
-        //         for(int tempcharCount = 0;tempcharCount<charCount;tempcharCount++){
-        //             String[] data = new String[3];
-        //             char currentChar = line.charAt(tempcharCount);
-        //             if (currentChar == ','){
-        //                 tempcharCount++;
-        //                 currentChar = line.charAt(tempcharCount);
-        //                 tempValue = tempValue + currentChar;
-        //                 data[count] = tempValue;
-        //                 System.out.println(data[count]);
-        //                 count++;
-        //             }
-        //             else{    
-        //                 tempValue = tempValue + currentChar;
-        //             }
-        //         }
-        //     }
-        // }
-        // catch (Exception e) {
-        //     e.printStackTrace();
-        // }
+    public void readMenu(){
+        //reference: https://youtu.be/L2xczUN9aI0
+        String file = "menu.csv";
+        try {
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines = bR.lines().toArray();
+                
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString().trim();
+                    String[] dataRow = line.split(",");
+                    model.addRow(dataRow);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public void mouseClicked(MouseEvent mevt){  
