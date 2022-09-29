@@ -18,8 +18,8 @@ public class LoginPage implements ActionListener{
     JPanel loginPanel = new JPanel();
     JButton loginBtn = new JButton("LOGIN");
     JButton newloginBtn = new JButton("New Customer? Sign Up Here");
-    JTextField emailTf = new JTextField();
-    JPasswordField passTf = new JPasswordField();
+    JTextField emailTf = new JTextField("Customer1@gmail.com");
+    JPasswordField passTf = new JPasswordField("ilikechips");
     JLabel title = new JLabel("Welcome To The Golden Lodge");
     JLabel emailLbl = new JLabel("Email:");
     JLabel passLbl = new JLabel("Password:");
@@ -40,6 +40,7 @@ public class LoginPage implements ActionListener{
         
         newloginBtn.setBounds(200,195,275,25);
         newloginBtn.setFocusable(false);
+        newloginBtn.addActionListener(this);
         
         loginBtn.setBounds(200,230,275,35);
         loginBtn.setFocusable(false);
@@ -69,6 +70,7 @@ public class LoginPage implements ActionListener{
 
             if(loginDetails.containsKey(userEmail)){
                 if(userEmail.equals("Staff@gmail.com") && loginDetails.get(userEmail).equals(userPass)){
+                    messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
                     StaffPage staffpage = new StaffPage();
@@ -91,7 +93,14 @@ public class LoginPage implements ActionListener{
         }
 
         if(e.getSource()==newloginBtn){
-            frame.setVisible(false);
+            messageLbl.setText("new customer!");
+            frame.dispose();
+            openNewCustPage();
         }
+    }
+
+    public void openNewCustPage(){
+        LoginDetails loginDetails = new LoginDetails();
+        NewCustPage newcustpage = new NewCustPage(loginDetails.getLoginDetail());
     }
 }
