@@ -1,3 +1,6 @@
+//wanted to add buttons to table
+//wanted to dynamically name the buttons https://www.tutorialspoint.com/how-can-we-change-the-jbutton-text-dynamically-in-java
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -6,15 +9,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.*;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
-public class StaffMenuPage {
+public class StaffMenuPage implements MouseListener{
     JFrame frame = new JFrame();
     JLabel title = new JLabel("Menu");
     JTextField userSearch = new JTextField();
     TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
+    JButton addFoodBtn = new JButton("<html><center>ADD TO ORDER</center></html>");
     
     String[] headings= {"Food ID","Food Name","Cost"};      
     DefaultTableModel model = new DefaultTableModel(headings,0);
@@ -25,7 +32,6 @@ public class StaffMenuPage {
     JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
     JLabel custOrderlbl = new JLabel("CUSTOMER ORDER");
     //////////////////////
-    String file = "menu.txt";
     String line = "";
     MenuList menuList = new MenuList();
     FoodItem food = new FoodItem();
@@ -47,17 +53,23 @@ public class StaffMenuPage {
         readMenu();
     }
     
-    
     public void initComponentsintoFrame(){
         title.setBounds(380, 10, 70, 30);
         title.setFont(new Font(null,Font.BOLD,20));
         frame.add(title);    
         
+        addFoodBtn.setBounds(140,480,100,30);
+        addFoodBtn.setFocusable(false);
+        frame.add(addFoodBtn);
+        
         userSearch.setBounds(30,50,200,20);
         searchPrompt.setForeground(Color.gray); 
         frame.add(userSearch);
         
+        demoTable.addMouseListener(this);
+        
         demoTableScroll.setBounds(30,80,400,350);
+        
         frame.add(demoTableScroll);
 
         confirmOrder.setBounds(500,390,250,40);
@@ -72,50 +84,46 @@ public class StaffMenuPage {
         box.add(custOrderlbl);
     }
 
-    public void readMenu(){ //hardcoded menu
-        String[] row1 = {"1","Salt and Pepper Spare Ribs","4.8"};
-        String[] row2 = {"2","Salt and Pepper Chicken Wings","4.8"};
-        String[] row3 = {"3","Sesame prawns on Toast","2.2"};
-        String[] row4 = {"4","Chicken Wings in Fruity O.K Sauce","3.5"};
-        String[] row5 = {"5","Prawn Cocktail","2.2"};
+    public void addFoodtoOrder(){
         
-        model.addRow(row1);
-        model.addRow(row2);
-        model.addRow(row3);
-        model.addRow(row4);
-        model.addRow(row5);
-
-
-
-        // String file = "menu.csv";
-        // BufferedReader reader = null;
-        // String line = "";
-        // String tempValue = "";
-        // int count = 0;
-        
-        // try {
-        //     reader = new BufferedReader(new FileReader(file));
-        //     while((line = reader.readLine()) != null){
-        //         int charCount = line.length();
-        //         for(int tempcharCount = 0;tempcharCount<charCount;tempcharCount++){
-        //             String[] data = new String[3];
-        //             char currentChar = line.charAt(tempcharCount);
-        //             if (currentChar == ','){
-        //                 tempcharCount++;
-        //                 currentChar = line.charAt(tempcharCount);
-        //                 tempValue = tempValue + currentChar;
-        //                 data[count] = tempValue;
-        //                 System.out.println(data[count]);
-        //                 count++;
-        //             }
-        //             else{    
-        //                 tempValue = tempValue + currentChar;
-        //             }
-        //         }
-        //     }
-        // }
-        // catch (Exception e) {
-        //     e.printStackTrace();
-        // }
+    }
+    
+    public void readMenu(){
+        //reference: https://youtu.be/L2xczUN9aI0
+        String file = "menu.csv";
+        try {
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines = bR.lines().toArray();
+                
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString().trim();
+                    String[] dataRow = line.split(",");
+                    model.addRow(dataRow);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void mouseClicked(MouseEvent mevt){  
+        int theRow = demoTable.rowAtPoint(mevt.getPoint());
+        System.out.println(theRow);
+    } 
+    
+    public void mousePressed(MouseEvent mevt){
+    
+    }
+    
+    public void mouseEntered(MouseEvent mevt){
+    }
+    
+    public void mouseExited(MouseEvent mevt){
+    
+    }
+    
+    public void mouseReleased(MouseEvent mevt){
+    
     }
 }
