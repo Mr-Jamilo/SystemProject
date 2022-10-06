@@ -10,11 +10,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.*;
+import javax.swing.text.JTextComponent;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -25,6 +30,7 @@ public class MenuPage implements MouseListener, ActionListener{
     String foodCost;
     int removeFoodIndex;
     int amountOrdered;
+    Double totalcost = 0.0;
     
     JFrame frame = new JFrame();
     JLabel title = new JLabel("Menu");
@@ -38,6 +44,8 @@ public class MenuPage implements MouseListener, ActionListener{
     JTable demoTable = new JTable(model);
     JScrollPane demoTableScroll = new JScrollPane(demoTable);
     
+    JLabel totalLbl = new JLabel();
+    
     String[] oHeadings = {"Food Name","Cost"};
     DefaultTableModel oModel = new DefaultTableModel(oHeadings,0);
     JTable oTable = new JTable(oModel);
@@ -46,11 +54,6 @@ public class MenuPage implements MouseListener, ActionListener{
     JPanel box = new JPanel();
     JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
     JLabel custOrderlbl = new JLabel("YOUR ORDER");
-    //////////////////////
-    String file = "menu.txt";
-    String line = "";
-    MenuList menuList = new MenuList();
-    FoodItem food = new FoodItem();
     
     MenuPage(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,6 +73,10 @@ public class MenuPage implements MouseListener, ActionListener{
         custOrderlbl.setBounds(570, 40, 200, 60);
         custOrderlbl.setFont(new Font(null,Font.BOLD,15));
         frame.add(custOrderlbl);
+        
+        totalLbl.setBounds(500,490,250,40);
+        totalLbl.setFont(new Font(null,Font.BOLD,15));
+        frame.add(totalLbl);
         
         addFoodBtn.setBounds(140,480,100,70);
         addFoodBtn.setFocusable(false);
@@ -142,15 +149,40 @@ public class MenuPage implements MouseListener, ActionListener{
             }
         }
         else if(e.getSource()==confirmOrder){
-            int lastRow = amountOrdered - 1;
-            for(int i = amountOrdered;i>=0;i--){
-                
+            try {
+                FileWriter fr = new FileWriter("custorder.csv");
+                for(int i = 0;i < amountOrdered;i++){
+                    String tempfoodItem = (String) oTable.getModel().getValueAt(i,0);
+                    String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
+                    fr.write(tempfoodItem+","+tempfoodCost);
+                    fr.write("\r\n");
+                }
+                fr.close();
+            } 
+            catch (Exception e1) {
+                System.out.println("error");
             }
+            
+            for(int i = 0; i < amountOrdered;i++){
+                String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
+                Double cost = Double.parseDouble(tempfoodCost);
+                totalcost = totalcost + cost;
+            }
+            //System.out.println(totalcost);
+            
+            totalLbl.setText("Total: " + totalcost);
+            clearTable();
         }
     }
     
+    public void clearTable(){
+        int lastRow = amountOrdered - 1;
+        for(int i = lastRow;i>=0;i--){
+            oModel.removeRow(i);
+        }
+    }
+
     public void mousePressed(MouseEvent mevt){
-    
     }
     
     public void mouseEntered(MouseEvent mevt){
