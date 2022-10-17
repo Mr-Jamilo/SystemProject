@@ -19,16 +19,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTabbedPane;
+import java.math.BigDecimal;
 
 public class MenuPage implements MouseListener, ActionListener{
     String foodItem;
     String foodCost;
     int removeFoodIndex;
     int amountOrdered;
-    Double totalcost = 0.0;
+    BigDecimal totalcost = new BigDecimal(0);
     String orderID = "";
     
     JPanel mainpanel = new JPanel(null);
@@ -192,8 +194,8 @@ public class MenuPage implements MouseListener, ActionListener{
             
             for(int i = 0; i < amountOrdered;i++){
                 String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                Double cost = Double.parseDouble(tempfoodCost);
-                totalcost = totalcost + cost;
+                BigDecimal cost = new BigDecimal(tempfoodCost);
+                totalcost = totalcost.add(cost);
             }
             
             totalLbl.setText("Total: £" + totalcost);
@@ -205,7 +207,21 @@ public class MenuPage implements MouseListener, ActionListener{
     
     public void getOrderID(){
         try {
-            FileReader fR = new FileReader("tempcurrentorders.csv");
+            try (BufferedReader bR = new BufferedReader(new FileReader("tempcurrentorders.csv"))) {
+                String line = bR.readLine();
+                while (line !=null){
+                    String[] b = line.split(",");
+                    System.out.println(b[0]);
+                    line = bR.readLine();
+                }
+
+            } catch (FileNotFoundException e) {
+                throw e;
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             
 
         } catch (FileNotFoundException e) {
@@ -215,24 +231,21 @@ public class MenuPage implements MouseListener, ActionListener{
     
     public void writeToCurrentOrdersFile(){
         String[] data = new String[amountOrdered];
-        Double total = 0.0;
-        String strTotal = "";
         try{
             FileWriter fW = new FileWriter("tempcurrentorders.csv",true);
             for(int i = 0;i<amountOrdered;i++){
                 String tempfooditem = (String) oTable.getModel().getValueAt(i,0);
-                String tempCost = (String) oTable.getModel().getValueAt(i, 1);
-                Double cost = Double.parseDouble(tempCost);
-                total = total + cost;
-                strTotal = total + "";
+                // String tempCost = (String) oTable.getModel().getValueAt(i, 1);
+                // Double cost = Double.parseDouble(tempCost);
+                // total = total + cost;
+                // strTotal = total + "";
                 
                 data[i] = tempfooditem;
-                System.out.println(data[i]);
+                //System.out.println(data[i]);
                 fW.append(data[i] + ",");
-
-                
             }
-            fW.append(strTotal);
+            String temptotalcost = totalcost + "";
+            fW.append(temptotalcost);
             fW.append("\r\n");
             fW.close();
         } catch(Exception exception){
