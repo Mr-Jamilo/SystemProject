@@ -1,7 +1,9 @@
 //wanted to add buttons to table
 //wanted to dynamically name the buttons https://www.tutorialspoint.com/how-can-we-change-the-jbutton-text-dynamically-in-java
 
-import javax.swing.BorderFactory;
+//TODO ADD TABBEDPANE
+//TODO CHANGE FRAME TO PANEL
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,20 +12,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.*;
-import javax.swing.text.JTextComponent;
-
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTabbedPane;
 
 public class MenuPage implements MouseListener, ActionListener{
     String foodItem;
@@ -32,7 +29,10 @@ public class MenuPage implements MouseListener, ActionListener{
     int amountOrdered;
     Double totalcost = 0.0;
     
+    JPanel mainpanel = new JPanel(null);
+    JPanel orderpanel = new JPanel(null);
     JFrame frame = new JFrame();
+    JTabbedPane tabs = new JTabbedPane();
     JLabel title = new JLabel("Menu");
     JTextField userSearch = new JTextField();
     TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
@@ -60,10 +60,21 @@ public class MenuPage implements MouseListener, ActionListener{
         frame.setSize(800,600);
         frame.setLayout(null);
         frame.setVisible(true);
-
+        
+        //initFrame();
         initComponentsintoFrame();
         readMenu();
     }
+    
+    // public void initFrame(){
+        // this.setLayout(new GridLayout(1,1));
+        // this.add(tabs);
+        // this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // this.setSize(800,600);
+        // tabs.addTab("Menu",mainpanel);
+        // tabs.addTab("Order",orderpanel);
+        // this.setVisible(true);
+    // }
     
     public void initComponentsintoFrame(){
         title.setBounds(380, 10, 70, 30);
@@ -160,18 +171,47 @@ public class MenuPage implements MouseListener, ActionListener{
                 fr.close();
             } 
             catch (Exception e1) {
-                System.out.println("error");
+                System.out.println("error e1");
             }
+            
+            try {
+                FileWriter fr = new FileWriter("currentorders.csv");
+                for(int i = 0;i < amountOrdered;i++){
+                    String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
+                    Double cost = Double.parseDouble(tempfoodCost);
+                    
+                }
+                fr.close();
+            } 
+            catch (Exception e2) {
+                System.out.println("error e2");
+            }
+            
             
             for(int i = 0; i < amountOrdered;i++){
                 String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
                 Double cost = Double.parseDouble(tempfoodCost);
                 totalcost = totalcost + cost;
             }
-            //System.out.println(totalcost);
             
-            totalLbl.setText("Total: " + totalcost);
+            totalLbl.setText("Total: £" + totalcost);
+            writeToCurrentOrdersFile();
             clearTable();
+        }
+    }
+    
+    public void writeToCurrentOrdersFile(){
+        String[] data = new String[amountOrdered];
+        try{
+            FileWriter fW = new FileWriter("tempcurrentorders.csv",true);
+            for(int i = 1;i<amountOrdered;i++){
+                String tempfooditem = (String) oTable.getModel().getValueAt(i,0);
+                data[i] = tempfooditem;
+                fW.append(data[i]);
+            }
+        }
+        catch(Exception exception){
+            System.out.println("error writing to currentorders.csv");
         }
     }
     
@@ -181,7 +221,7 @@ public class MenuPage implements MouseListener, ActionListener{
             oModel.removeRow(i);
         }
     }
-
+    
     public void mousePressed(MouseEvent mevt){
     }
     

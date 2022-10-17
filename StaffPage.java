@@ -33,7 +33,7 @@ public class StaffPage implements ActionListener{ //used html for better formatt
         viewAllOrdersBtn.setBounds(300,139,129,74);
         viewAllOrdersBtn.setFont(new Font(null,Font.BOLD,13));
         viewAllOrdersBtn.setFocusable(false);
-        viewAllCustomersBtn.addActionListener(this);
+        viewAllOrdersBtn.addActionListener(this);
         
         endDayBtn.setBounds(485,139,129,74);
         endDayBtn.setFont(new Font(null,Font.BOLD,13));
@@ -77,30 +77,31 @@ public class StaffPage implements ActionListener{ //used html for better formatt
             frame.dispose();
             StaffMenuPage staffmenupage = new StaffMenuPage();
         }
+        
         else if (e.getSource()==viewAllOrdersBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            WeeklyOverview weeklyoverview = new WeeklyOverview();
+            CurrentOrders currentorders = new CurrentOrders();
         }
         else if(e.getSource()==endDayBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            AllCustomers allcustomers = new AllCustomers();
+            EndDay endday = new EndDay();
         }
         else if(e.getSource()==viewWeeklyBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            Archives archives = new Archives();
+            WeeklyOverview weeklyoverview = new WeeklyOverview();
         }
         else if(e.getSource()==viewArchivesBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            EndDay endday = new EndDay();
+            Archives archives = new Archives();
         }
         else if(e.getSource()==viewAllCustomersBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            CurrentOrders currentorders = new CurrentOrders();
+            AllCustomers allcustomers = new AllCustomers();
         }
     }
 }
