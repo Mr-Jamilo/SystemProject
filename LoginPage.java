@@ -18,8 +18,8 @@ public class LoginPage implements ActionListener{
     JPanel loginPanel = new JPanel();
     JButton loginBtn = new JButton("LOGIN");
     JButton newloginBtn = new JButton("New Customer? Sign Up Here");
-    JTextField emailTf = new JTextField("Staff@gmail.com");
-    JPasswordField passTf = new JPasswordField("abc123");
+    JTextField emailTf = new JTextField("Customer1@gmail.com");
+    JPasswordField passTf = new JPasswordField("ilikechips");
     JLabel title = new JLabel("Welcome To The Golden Lodge");
     JLabel emailLbl = new JLabel("Email:");
     JLabel passLbl = new JLabel("Password:");

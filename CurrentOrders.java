@@ -59,12 +59,17 @@ public class CurrentOrders implements MouseListener, ActionListener{
     
     public void readOrderID(){
         String file = "custorder.csv";
-        try{
-            try(FileReader fR = new FileReader(file)){
-                
+        try {
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines =  bR.lines().toArray();
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString().trim();
+                    String[] dataRow = line.split(",");
+                    model.addRow(dataRow);
+                }
             }
         }
-        catch(Exception e){
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

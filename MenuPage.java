@@ -32,6 +32,9 @@ public class MenuPage implements MouseListener, ActionListener{
     int amountOrdered;
     BigDecimal totalcost = new BigDecimal(0);
     String orderID = "";
+    String line= "";
+    String[] templine;
+    int highestID = 0;
     
     JPanel mainpanel = new JPanel(null);
     JPanel orderpanel = new JPanel(null);
@@ -205,51 +208,58 @@ public class MenuPage implements MouseListener, ActionListener{
         }
     }
     
-    public void getOrderID(){
-        try {
-            try (BufferedReader bR = new BufferedReader(new FileReader("tempcurrentorders.csv"))) {
-                String line = bR.readLine();
-                while (line !=null){
-                    String[] b = line.split(",");
-                    System.out.println(b[0]);
-                    line = bR.readLine();
+    public int getOrderID(){
+        int linecount = 0;
+        try (BufferedReader bR = new BufferedReader(new FileReader("tempcurrentorders.csv"))) {
+            while((line = bR.readLine()) != null){
+                templine = line.split(",");
+                linecount++;
+                    
+                try{
+                    String strtemphighestID = templine[0];
+                    if (highestID < (Integer.parseInt(strtemphighestID))){
+                        highestID = Integer.parseInt(strtemphighestID);
+                    }
+                } catch(Exception e){
+                    System.out.println("parsing error");
                 }
-
-            } catch (FileNotFoundException e) {
-                throw e;
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            
-
-        } catch (FileNotFoundException e) {
+            highestID = highestID + 1;
+            //System.out.println(highestID);
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        //System.out.println(highestID + " number 1");
+        return highestID;
     }
     
     public void writeToCurrentOrdersFile(){
-        String[] data = new String[amountOrdered];
+        
+        String[] data = new String[amountOrdered + 1];
+        String strhighestID = highestID + "";
         try{
             FileWriter fW = new FileWriter("tempcurrentorders.csv",true);
-            for(int i = 0;i<amountOrdered;i++){
-                String tempfooditem = (String) oTable.getModel().getValueAt(i,0);
-                // String tempCost = (String) oTable.getModel().getValueAt(i, 1);
-                // Double cost = Double.parseDouble(tempCost);
-                // total = total + cost;
-                // strTotal = total + "";
-                
-                data[i] = tempfooditem;
-                //System.out.println(data[i]);
-                fW.append(data[i] + ",");
+            data[0] = (strhighestID);
+            fW.append(strhighestID + ",");
+
+            String tempfooditem = (String) oTable.getModel().getValueAt(0,0);
+            data[1] = tempfooditem;
+            fW.append(data[1] + ",");
+            
+            for(int i = 1;i<amountOrdered;i++){
+                String tempfooditem2 = (String) oTable.getModel().getValueAt(i,0);
+                //System.out.println("loop: " + i);
+                //System.out.println(tempfooditem2);
+                data[i+1] = tempfooditem2;
+                fW.append(data[i+1] + ",");
             }
-            String temptotalcost = totalcost + "";
-            fW.append(temptotalcost);
+            String strtotalcost = totalcost.toString();
+            fW.append(strtotalcost);
             fW.append("\r\n");
             fW.close();
+
         } catch(Exception exception){
-            System.out.println("error writing to currentorders.csv");
+            System.out.println("error writing to tempcurrentorders.csv");
         }
     }
     
