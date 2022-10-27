@@ -3,7 +3,6 @@
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -23,6 +22,7 @@ public class NewCustPage implements ActionListener{
     JButton signUpBtn = new JButton("SIGN UP");
     JLabel messageLbl = new JLabel();
     HashMap<String,String> loginDetails = new HashMap<String,String>();
+    JButton backBtn = new JButton("<html><center>BACK</center></html>");
 
     NewCustPage(HashMap<String, String> hashMap){
         
@@ -32,6 +32,10 @@ public class NewCustPage implements ActionListener{
         passLBL.setBounds(168,130,75,25);
         ConpassLBL.setBounds(112,160,140,25);
 
+        backBtn.setBounds(700,20,70,30);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(this);
+        
         emailTf.setBounds(275,100,200,25);
         passTf.setBounds(275,130,200,25);
         ConpassTf.setBounds(275,160,200,25);
@@ -44,6 +48,7 @@ public class NewCustPage implements ActionListener{
         frame.add(emailLBL);
         frame.add(passLBL);
         frame.add(ConpassLBL);
+        frame.add(backBtn);
         frame.add(emailTf);
         frame.add(passTf);
         frame.add(ConpassTf);        
@@ -56,6 +61,11 @@ public class NewCustPage implements ActionListener{
     }
     
     public void actionPerformed(ActionEvent e){
+        if (e.getSource()==backBtn){
+            frame.dispose();
+            new LoginPage(null);
+        }
+        
         if (e.getSource()==signUpBtn){
             String userEmail = emailTf.getText();
             String userPass = String.valueOf(passTf.getPassword());
@@ -73,7 +83,7 @@ public class NewCustPage implements ActionListener{
                     messageLbl.setText("passwords match :)");
                     frame.dispose();
                     loginDetails.put(userEmail, ConuserPass);
-                    LoginPage loginpage = new LoginPage(loginDetails);
+                    new LoginPage(loginDetails);
                 }
                 else{
                     messageLbl.setForeground(Color.red);

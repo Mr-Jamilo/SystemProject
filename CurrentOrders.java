@@ -12,14 +12,14 @@ public class CurrentOrders implements MouseListener, ActionListener{
     JFrame frame = new JFrame();
     JLabel title = new JLabel("CURRENT ORDERS");
     JButton orderBtn = new JButton("<html><center>READ ORDER</center></html>");
-
+    JButton backBtn = new JButton("<html><center>BACK</center></html>");
     
     String[] headings = {"Order ID"};
     DefaultTableModel model = new DefaultTableModel(headings,0);
     JTable table = new JTable(model);
     JScrollPane ScrollTable = new JScrollPane(table);
 
-    String[] oHeadings = {"Food Name"};
+    String[] oHeadings = {"Order"};
     DefaultTableModel oModel = new DefaultTableModel(oHeadings,0);
     JTable oTable = new JTable(oModel);
     JScrollPane oTableScroll = new JScrollPane(oTable);
@@ -41,13 +41,18 @@ public class CurrentOrders implements MouseListener, ActionListener{
         title.setFont(new Font(null,Font.BOLD,20));
         frame.add(title);
         
+        backBtn.setBounds(700,20,70,30);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(this);
+        frame.add(backBtn);
+        
         orderBtn.setBounds(30,450,100,70);
         orderBtn.setFocusable(false);
         orderBtn.addActionListener(this);
         frame.add(orderBtn);
         
         table.addMouseListener(this);
-        ScrollTable.setBounds(30,80,400,350);
+        ScrollTable.setBounds(30,80,100,200);
         frame.add(ScrollTable);
         
         oTable.addMouseListener(this);
@@ -58,18 +63,15 @@ public class CurrentOrders implements MouseListener, ActionListener{
     }
     
     public void readOrderID(){
-        String file = "custorder.csv";
-        try {
-            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
-                Object[] tableLines =  bR.lines().toArray();
-                for (int i = 0; i < tableLines.length;i++){
-                    String line = tableLines[i].toString().trim();
-                    String[] dataRow = line.split(",");
-                    model.addRow(dataRow);
-                }
+        String file = "tempcurrentorders.csv";
+        try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            Object[] tableLines =  bR.lines().toArray();
+            for (int i = 0; i < tableLines.length;i++){
+                String line = tableLines[i].toString().trim();
+                String[] dataRow = line.split(",");
+                model.addRow(dataRow);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -79,21 +81,11 @@ public class CurrentOrders implements MouseListener, ActionListener{
     }
     
     public void actionPerformed(ActionEvent e){
-        
+        if (e.getSource()==backBtn){
+            frame.dispose();
+            new StaffPage();
+        }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     public void mousePressed(MouseEvent mevt){
     }

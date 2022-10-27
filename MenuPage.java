@@ -16,7 +16,6 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,6 +35,8 @@ public class MenuPage implements MouseListener, ActionListener{
     String[] templine;
     int highestID = 0;
     
+    LoginDetails loginDetails = new LoginDetails();
+    
     JPanel mainpanel = new JPanel(null);
     JPanel orderpanel = new JPanel(null);
     JFrame frame = new JFrame();
@@ -45,6 +46,7 @@ public class MenuPage implements MouseListener, ActionListener{
     TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
     JButton addFoodBtn = new JButton("<html><center>ADD TO ORDER</center></html>");
     JButton removeFoodBtn = new JButton("<html><center>REMOVE FROM ORDER</center></html>");
+    JButton backBtn = new JButton("<html><center>LOG OUT</center></html>");
     
     String[] headings= {"Food ID","Food Name","Cost"};      
     DefaultTableModel model = new DefaultTableModel(headings,0);
@@ -91,6 +93,11 @@ public class MenuPage implements MouseListener, ActionListener{
         custOrderlbl.setBounds(570, 40, 200, 60);
         custOrderlbl.setFont(new Font(null,Font.BOLD,15));
         frame.add(custOrderlbl);
+        
+        backBtn.setBounds(700,20,70,30);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(this);
+        frame.add(backBtn);
         
         totalLbl.setBounds(500,490,250,40);
         totalLbl.setFont(new Font(null,Font.BOLD,15));
@@ -153,6 +160,11 @@ public class MenuPage implements MouseListener, ActionListener{
     } 
     
     public void actionPerformed(ActionEvent e){
+        if (e.getSource()==backBtn){
+            frame.dispose();
+            new LoginPage(loginDetails.getLoginDetail());
+        }
+        
         if(e.getSource()==addFoodBtn){
             String[] data = {foodItem,foodCost};
             oModel.addRow(data);
@@ -185,12 +197,10 @@ public class MenuPage implements MouseListener, ActionListener{
             //     FileWriter fr = new FileWriter("currentorders.csv");
             //     for(int i = 0;i < amountOrdered;i++){
             //         String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-            //         Double cost = Double.parseDouble(tempfoodCost);
-                    
+            //         Double cost = Double.parseDouble(tempfoodCost);   
             //     }
             //     fr.close();
-            // } 
-            // catch (Exception e2) {
+            // } catch (Exception e2) {
             //     System.out.println("error e2");
             // }
             
@@ -209,11 +219,9 @@ public class MenuPage implements MouseListener, ActionListener{
     }
     
     public int getOrderID(){
-        int linecount = 0;
         try (BufferedReader bR = new BufferedReader(new FileReader("tempcurrentorders.csv"))) {
             while((line = bR.readLine()) != null){
                 templine = line.split(",");
-                linecount++;
                     
                 try{
                     String strtemphighestID = templine[0];

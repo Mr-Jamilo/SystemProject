@@ -73,13 +73,13 @@ public class LoginPage implements ActionListener{
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
-                    StaffPage staffpage = new StaffPage();
+                    new StaffPage();
                 }
                 else if(loginDetails.get(userEmail).equals(userPass)){
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
-                    MenuPage menupage = new MenuPage();
+                    new MenuPage();
                 }
                 else{
                     messageLbl.setForeground(Color.red);
@@ -101,6 +101,6 @@ public class LoginPage implements ActionListener{
 
     public void openNewCustPage(){
         LoginDetails loginDetails = new LoginDetails();
-        NewCustPage newcustpage = new NewCustPage(loginDetails.getLoginDetail());
+        new NewCustPage(loginDetails.getLoginDetail());
     }
 }

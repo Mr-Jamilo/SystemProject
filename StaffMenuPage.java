@@ -1,7 +1,6 @@
 //wanted to add buttons to table
 //wanted to dynamically name the buttons https://www.tutorialspoint.com/how-can-we-change-the-jbutton-text-dynamically-in-java
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,30 +9,31 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.*;
-import javax.swing.text.JTextComponent;
-
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class StaffMenuPage implements MouseListener, ActionListener{
     String foodItem;
     String foodCost;
     int removeFoodIndex;
     int amountOrdered;
-    Double totalcost = 0.0;
+    BigDecimal totalcost = new BigDecimal(0);
+    String orderID = "";
+    String line= "";
+    String[] templine;
+    int highestID = 0;
     
     JFrame frame = new JFrame();
     JLabel title = new JLabel("Menu");
+    JButton backBtn = new JButton("<html><center>BACK</center></html>");
     JTextField userSearch = new JTextField();
     TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
     JButton addFoodBtn = new JButton("<html><center>ADD TO ORDER</center></html>");
@@ -74,6 +74,11 @@ public class StaffMenuPage implements MouseListener, ActionListener{
         custOrderlbl.setFont(new Font(null,Font.BOLD,15));
         frame.add(custOrderlbl);
         
+        backBtn.setBounds(700,20,70,30);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(this);
+        frame.add(backBtn);
+
         totalLbl.setBounds(500,490,250,40);
         totalLbl.setFont(new Font(null,Font.BOLD,15));
         frame.add(totalLbl);
@@ -135,6 +140,11 @@ public class StaffMenuPage implements MouseListener, ActionListener{
     } 
     
     public void actionPerformed(ActionEvent e){
+        if (e.getSource()==backBtn){
+            frame.dispose();
+            new StaffPage();
+        }
+        
         if(e.getSource()==addFoodBtn){
             String[] data = {foodItem,foodCost};
             oModel.addRow(data);
@@ -149,30 +159,85 @@ public class StaffMenuPage implements MouseListener, ActionListener{
             }
         }
         else if(e.getSource()==confirmOrder){
-            try {
-                FileWriter fr = new FileWriter("temporder.csv");
-                for(int i = 0;i < amountOrdered;i++){
-                    String tempfoodItem = (String) oTable.getModel().getValueAt(i,0);
-                    String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                    fr.write(tempfoodItem+","+tempfoodCost);
-                    fr.write("\r\n");
-                }
-                fr.close();
-            } 
-            catch (Exception e1) {
-                System.out.println("error");
-            }
+            // try {
+            //     FileWriter fr = new FileWriter("custorder.csv");
+            //     for(int i = 0;i < amountOrdered;i++){
+            //         String tempfoodItem = (String) oTable.getModel().getValueAt(i,0);
+            //         String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
+            //         fr.write(tempfoodItem+","+tempfoodCost);
+            //         fr.write("\r\n");
+            //     }
+            //     fr.close();
+            // } 
+            // catch (Exception e1) {
+            //     System.out.println("error e1");
+            // }
+            
             
             for(int i = 0; i < amountOrdered;i++){
                 String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                Double cost = Double.parseDouble(tempfoodCost);
-                totalcost = totalcost + cost;
+                BigDecimal cost = new BigDecimal(tempfoodCost);
+                totalcost = totalcost.add(cost);
             }
             
             totalLbl.setText("Total: £" + totalcost);
+            getOrderID();
+            writeToCurrentOrdersFile();
             clearTable();
         }
     }
+    
+    public int getOrderID(){
+        try (BufferedReader bR = new BufferedReader(new FileReader("tempcurrentorders.csv"))) {
+            while((line = bR.readLine()) != null){
+                templine = line.split(",");
+                    
+                try{
+                    String strtemphighestID = templine[0];
+                    if (highestID < (Integer.parseInt(strtemphighestID))){
+                        highestID = Integer.parseInt(strtemphighestID);
+                    }
+                } catch(Exception e){
+                    System.out.println("parsing error");
+                }
+            }
+            highestID = highestID + 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return highestID;
+    }
+    
+    public void writeToCurrentOrdersFile(){
+        
+        String[] data = new String[amountOrdered + 1];
+        String strhighestID = highestID + "";
+        try{
+            FileWriter fW = new FileWriter("tempcurrentorders.csv",true);
+            data[0] = (strhighestID);
+            fW.append(strhighestID + ",");
+
+            String tempfooditem = (String) oTable.getModel().getValueAt(0,0);
+            data[1] = tempfooditem;
+            fW.append(data[1] + ",");
+            
+            for(int i = 1;i<amountOrdered;i++){
+                String tempfooditem2 = (String) oTable.getModel().getValueAt(i,0);
+                //System.out.println("loop: " + i);
+                //System.out.println(tempfooditem2);
+                data[i+1] = tempfooditem2;
+                fW.append(data[i+1] + ",");
+            }
+            String strtotalcost = totalcost.toString();
+            fW.append(strtotalcost);
+            fW.append("\r\n");
+            fW.close();
+
+        } catch(Exception exception){
+            System.out.println("error writing to tempcurrentorders.csv");
+        }
+    }
+    
     
     public void clearTable(){
         int lastRow = amountOrdered - 1;

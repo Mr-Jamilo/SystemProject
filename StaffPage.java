@@ -15,8 +15,10 @@ public class StaffPage implements ActionListener{ //used html for better formatt
     JButton viewWeeklyBtn = new JButton("<html><center>View Weekly<br />Overview</center></html>"); 
     JButton viewArchivesBtn = new JButton("<html><center>View Archives</center></html>");
     JButton viewAllCustomersBtn = new JButton("<html><center>View All<br />Customers</center></html>");
+    JButton backBtn = new JButton("<html><center>LOG OUT</center></html>");
     JLabel messageLbl = new JLabel();
-    
+    LoginDetails loginDetails = new LoginDetails();
+
     StaffPage(){ //GUI
         //setBounds saves lines - better than setLocation and setSize
         
@@ -24,6 +26,11 @@ public class StaffPage implements ActionListener{ //used html for better formatt
         title.setFont(new Font(null,Font.BOLD,25)); //fonts can be changed in the final product
         messageLbl.setBounds(220,400,320,35);
         messageLbl.setFont(new Font(null,Font.BOLD,25));
+        
+        backBtn.setBounds(700,20,70,30);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(this);
+        frame.add(backBtn);
         
         addOrderBtn.setBounds(115,139,129,74);
         addOrderBtn.setFont(new Font(null,Font.BOLD,13));
@@ -71,37 +78,41 @@ public class StaffPage implements ActionListener{ //used html for better formatt
     }
     
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==backBtn){
+            frame.dispose();
+            new LoginPage(loginDetails.getLoginDetail());
+        }
 
         if (e.getSource()==addOrderBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            StaffMenuPage staffmenupage = new StaffMenuPage();
+            new StaffMenuPage();
         }
         
         else if (e.getSource()==viewAllOrdersBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            CurrentOrders currentorders = new CurrentOrders();
+            new CurrentOrders();
         }
         else if(e.getSource()==endDayBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            EndDay endday = new EndDay();
+            new EndDay();
         }
         else if(e.getSource()==viewWeeklyBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            WeeklyOverview weeklyoverview = new WeeklyOverview();
+            new WeeklyOverview();
         }
         else if(e.getSource()==viewArchivesBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            Archives archives = new Archives();
+            new Archives();
         }
         else if(e.getSource()==viewAllCustomersBtn){
             messageLbl.setForeground(Color.red);
             frame.dispose();
-            AllCustomers allcustomers = new AllCustomers();
+            new AllCustomers();
         }
     }
 }
