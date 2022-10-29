@@ -116,10 +116,10 @@ public class CurrentOrders implements MouseListener, ActionListener{
             } catch (Exception ex) {
                 System.out.println("Error reading file");
             }
-
         }
         
         else if (e.getSource()==paidBtn){
+            System.out.println("Order Paid - order written to allorders.csv");
             try (FileWriter fW = new FileWriter("allorders.csv",true)){
                 for(int i = 0; i < oModel.getRowCount();i++){
                     fW.append(oModel.getValueAt(i,0).toString());
@@ -136,11 +136,13 @@ public class CurrentOrders implements MouseListener, ActionListener{
         }
 
         else if (e.getSource()==notpaidBtn){
+            System.out.println("Order not paid - removed from tempcurrentorders.csv");
             removeOrderfromFile();
+            model.removeRow(table.getSelectedRow());
             clearTable();
         }
     }
-    
+
     public void clearTable(){
         int lastRow = amountOrdered - 1;
         for(int i = lastRow;i>=0;i--){
@@ -150,7 +152,7 @@ public class CurrentOrders implements MouseListener, ActionListener{
     }
     
     public void removeOrderfromFile(){
-    int selectedRowIndex = table.getSelectedRow();
+        int selectedRowIndex = table.getSelectedRow();
         String orderID = model.getValueAt(selectedRowIndex,0).toString();
         String file = "tempcurrentorders.csv";
         try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
