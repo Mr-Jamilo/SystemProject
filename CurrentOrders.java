@@ -9,10 +9,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class CurrentOrders implements MouseListener, ActionListener{
+    int amountOrdered;
     JFrame frame = new JFrame();
     JLabel title = new JLabel("CURRENT ORDERS");
     JButton orderBtn = new JButton("<html><center>READ ORDER</center></html>");
     JButton backBtn = new JButton("<html><center>BACK</center></html>");
+    JButton paidBtn = new JButton("<html><center>ORDER PAID</center></html>");
+    JButton notpaidBtn = new JButton("<html><center>ORDER NOT PAID</center></html>");
     
     String[] headings = {"Order ID"};
     DefaultTableModel model = new DefaultTableModel(headings,0);
@@ -46,17 +49,26 @@ public class CurrentOrders implements MouseListener, ActionListener{
         backBtn.addActionListener(this);
         frame.add(backBtn);
         
-        orderBtn.setBounds(30,450,100,70);
+        orderBtn.setBounds(190,450,90,50);
         orderBtn.setFocusable(false);
         orderBtn.addActionListener(this);
         frame.add(orderBtn);
         
+        paidBtn.setBounds(290,450,90,50);
+        paidBtn.setFocusable(false);
+        paidBtn.addActionListener(this);
+        frame.add(paidBtn);
+        
+        notpaidBtn.setBounds(390,450,90,50);
+        notpaidBtn.setFocusable(false);
+        notpaidBtn.addActionListener(this);
+        frame.add(notpaidBtn);
+
         table.addMouseListener(this);
         ScrollTable.setBounds(30,80,100,200);
         frame.add(ScrollTable);
         
-        oTable.addMouseListener(this);
-        oTableScroll.setBounds(500,90,250,280);
+        oTableScroll.setBounds(200,80,400,280);
         frame.add(oTableScroll);
 
         readOrderID();
@@ -76,15 +88,95 @@ public class CurrentOrders implements MouseListener, ActionListener{
         }
     }
     
-    public void mouseClicked(MouseEvent mevt){
-        int selectedRowIndex = table.getSelectedRow();
-    }
     
     public void actionPerformed(ActionEvent e){
         if (e.getSource()==backBtn){
             frame.dispose();
             new StaffPage();
         }
+        
+        if (e.getSource()==orderBtn){
+            clearTable();
+            
+            int selectedRowIndex = table.getSelectedRow();
+            String orderID = model.getValueAt(selectedRowIndex,0).toString();
+            String file = "tempcurrentorders.csv";
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines =  bR.lines().toArray();
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString();
+                    String[] dataRow = line.split(",");
+                    if (dataRow[0].equals(orderID)){
+                        for (int j = 1; j < dataRow.length;j++){
+                            oModel.addRow(new Object[]{dataRow[j]});
+                            amountOrdered = amountOrdered + 1;
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println("Error reading file");
+            }
+
+        }
+        
+        else if (e.getSource()==paidBtn){
+            try (FileWriter fW = new FileWriter("allorders.csv",true)){
+                for(int i = 0; i < oModel.getRowCount();i++){
+                    fW.append(oModel.getValueAt(i,0).toString());
+                    fW.append(",");
+                }
+                fW.write("\r\n");
+            } catch (Exception ex) {
+                System.out.println("Error writing to file");
+            }
+            
+            removeOrderfromFile();
+            model.removeRow(table.getSelectedRow());
+            clearTable();
+        }
+
+        else if (e.getSource()==notpaidBtn){
+            removeOrderfromFile();
+            clearTable();
+        }
+    }
+    
+    public void clearTable(){
+        int lastRow = amountOrdered - 1;
+        for(int i = lastRow;i>=0;i--){
+            oModel.removeRow(i);
+        }
+        amountOrdered = 0;
+    }
+    
+    public void removeOrderfromFile(){
+    int selectedRowIndex = table.getSelectedRow();
+        String orderID = model.getValueAt(selectedRowIndex,0).toString();
+        String file = "tempcurrentorders.csv";
+        try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            Object[] tableLines =  bR.lines().toArray();
+            for (int i = 0; i < tableLines.length;i++){
+                String line = tableLines[i].toString();
+                String[] dataRow = line.split(",");
+                if (dataRow[0].equals(orderID)){
+                    try (FileWriter fW = new FileWriter(file)){
+                        for (int j = 0; j < tableLines.length;j++){
+                            if (j != i){
+                                fW.append(tableLines[j].toString());
+                                fW.write("\r\n");
+                            }
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Error writing to file");                            
+                    }
+                }   
+            }
+        } catch (Exception ex) {
+            System.out.println("Error reading file");
+        }
+    }
+
+    public void mouseClicked(MouseEvent mevt){
     }
     
     public void mousePressed(MouseEvent mevt){
