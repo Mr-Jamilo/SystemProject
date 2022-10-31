@@ -19,12 +19,20 @@ public class CurrentOrders implements MouseListener, ActionListener{
     
     String[] headings = {"Order ID"};
     DefaultTableModel model = new DefaultTableModel(headings,0);
-    JTable table = new JTable(model);
+    JTable table = new JTable(model){
+        public boolean isCellEditable(int row, int column){
+            return false;
+        }
+    };
     JScrollPane ScrollTable = new JScrollPane(table);
 
     String[] oHeadings = {"Order"};
     DefaultTableModel oModel = new DefaultTableModel(oHeadings,0);
-    JTable oTable = new JTable(oModel);
+    JTable oTable = new JTable(oModel){
+        public boolean isCellEditable(int row, int column){
+            return false;
+        }
+    };
     JScrollPane oTableScroll = new JScrollPane(oTable);
 
 
@@ -66,9 +74,13 @@ public class CurrentOrders implements MouseListener, ActionListener{
 
         table.addMouseListener(this);
         ScrollTable.setBounds(30,80,100,200);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
         frame.add(ScrollTable);
         
         oTableScroll.setBounds(200,80,400,280);
+        oTable.getTableHeader().setReorderingAllowed(false);
+        oTable.getTableHeader().setResizingAllowed(false);
         frame.add(oTableScroll);
 
         readOrderID();

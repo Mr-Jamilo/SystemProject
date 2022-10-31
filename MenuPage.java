@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTabbedPane;
 import java.math.BigDecimal;
 
-public class MenuPage implements MouseListener, ActionListener{
+public class MenuPage extends JFrame implements MouseListener, ActionListener{
     String foodItem;
     String foodCost;
     int removeFoodIndex;
@@ -50,14 +50,23 @@ public class MenuPage implements MouseListener, ActionListener{
     
     String[] headings= {"Food ID","Food Name","Cost"};      
     DefaultTableModel model = new DefaultTableModel(headings,0);
-    JTable demoTable = new JTable(model);
+    JTable demoTable = new JTable(model)
+    {   
+        public boolean isCellEditable(int row, int column) {                
+            return false;               
+        }
+    };
     JScrollPane demoTableScroll = new JScrollPane(demoTable);
-    
+
     JLabel totalLbl = new JLabel();
     
     String[] oHeadings = {"Food Name","Cost"};
     DefaultTableModel oModel = new DefaultTableModel(oHeadings,0);
-    JTable oTable = new JTable(oModel);
+    JTable oTable = new JTable(oModel){
+        public boolean isCellEditable(int row, int column) {                
+            return false;               
+        }
+    };
     JScrollPane oTableScroll = new JScrollPane(oTable);
     
     JPanel box = new JPanel();
@@ -119,10 +128,20 @@ public class MenuPage implements MouseListener, ActionListener{
         
         demoTable.addMouseListener(this);
         demoTableScroll.setBounds(30,80,400,350);
+        demoTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        demoTable.getTableHeader().setReorderingAllowed(false);
+        demoTable.getTableHeader().setResizingAllowed(false);
+        demoTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        demoTable.getColumnModel().getColumn(1).setPreferredWidth(316);
+        demoTable.getColumnModel().getColumn(2).setPreferredWidth(34);
         frame.add(demoTableScroll);
 
         oTable.addMouseListener(this);
         oTableScroll.setBounds(500,90,250,280);
+        oTable.getTableHeader().setReorderingAllowed(false);
+        oTable.getTableHeader().setResizingAllowed(false);
+        oTable.getColumnModel().getColumn(0).setPreferredWidth(216);
+        oTable.getColumnModel().getColumn(1).setPreferredWidth(34);
         frame.add(oTableScroll);
 
         confirmOrder.setBounds(500,390,250,40);

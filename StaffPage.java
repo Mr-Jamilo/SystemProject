@@ -101,18 +101,21 @@ public class StaffPage implements ActionListener{ //used html for better formatt
         }
         else if(e.getSource()==viewWeeklyBtn){
             messageLbl.setForeground(Color.red);
-            frame.dispose();
-            new WeeklyOverview();
+            messageLbl.setText("Coming Soon!");
+            //frame.dispose();
+            //new WeeklyOverview();
         }
         else if(e.getSource()==viewArchivesBtn){
             messageLbl.setForeground(Color.red);
-            frame.dispose();
-            new Archives();
+            messageLbl.setText("Coming Soon!");
+            //frame.dispose();
+            //new Archives();
         }
         else if(e.getSource()==viewAllCustomersBtn){
             messageLbl.setForeground(Color.red);
-            frame.dispose();
-            new AllCustomers();
+            messageLbl.setText("Coming Soon!");
+            //frame.dispose();
+            //new AllCustomers();
         }
     }
 }
