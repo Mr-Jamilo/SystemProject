@@ -153,7 +153,9 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
     
     public void readMenu(){
         //reference: https://youtu.be/L2xczUN9aI0
-        String file = "menu.csv";
+        
+        System.out.println("Displaying menu");
+        String file = "tempmenu.csv";
         try {
             try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
                 Object[] tableLines =  bR.lines().toArray();
@@ -181,16 +183,20 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
     public void actionPerformed(ActionEvent e){
         if (e.getSource()==backBtn){
             frame.dispose();
+            System.out.println("Logging out of customer account");
             new LoginPage(loginDetails.getLoginDetail());
         }
         
         if(e.getSource()==addFoodBtn){
+            System.out.println("Added " + foodItem + " to order");
             String[] data = {foodItem,foodCost};
             oModel.addRow(data);
             amountOrdered = amountOrdered + 1;
         }
         else if(e.getSource()==removeFoodBtn){
             try {
+                String DelFoodItem = (String) oTable.getModel().getValueAt(removeFoodIndex, 1);
+                System.out.println("Removed " + foodItem + " from order");
                 oModel.removeRow(removeFoodIndex);
                 amountOrdered = amountOrdered - 1;
             } catch (Exception a) {
@@ -229,7 +235,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
                 BigDecimal cost = new BigDecimal(tempfoodCost);
                 totalcost = totalcost.add(cost);
             }
-            
+            System.out.println(totalcost);
             totalLbl.setText("Total: £" + totalcost);
             getOrderID();
             writeToCurrentOrdersFile();
@@ -248,7 +254,8 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
                         highestID = Integer.parseInt(strtemphighestID);
                     }
                 } catch(Exception e){
-                    System.out.println("parsing error");
+                    
+                    System.out.println("file is empty");
                 }
             }
             highestID = highestID + 1;
@@ -261,7 +268,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
     }
     
     public void writeToCurrentOrdersFile(){
-        
+        System.out.println("Written order to current orders file");
         String[] data = new String[amountOrdered + 1];
         String strhighestID = highestID + "";
         try{

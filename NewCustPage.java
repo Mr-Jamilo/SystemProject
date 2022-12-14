@@ -22,6 +22,7 @@ public class NewCustPage implements ActionListener{
     JButton signUpBtn = new JButton("SIGN UP");
     JLabel messageLbl = new JLabel();
     HashMap<String,String> loginDetails = new HashMap<String,String>();
+    LoginDetails logDetails = new LoginDetails();
     JButton backBtn = new JButton("<html><center>BACK</center></html>");
 
     NewCustPage(HashMap<String, String> hashMap){
@@ -63,7 +64,8 @@ public class NewCustPage implements ActionListener{
     public void actionPerformed(ActionEvent e){
         if (e.getSource()==backBtn){
             frame.dispose();
-            new LoginPage(null);
+            System.out.println("Going back to previous page");
+            new LoginPage(logDetails.getLoginDetail());
         }
         
         if (e.getSource()==signUpBtn){
@@ -81,6 +83,7 @@ public class NewCustPage implements ActionListener{
                 if(ConuserPass.equals(userPass)){
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("passwords match :)");
+                    System.out.println("Added " + userEmail + " and " + ConuserPass + " to hashtable");
                     frame.dispose();
                     loginDetails.put(userEmail, ConuserPass);
                     new LoginPage(loginDetails);

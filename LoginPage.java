@@ -15,11 +15,11 @@ import java.awt.event.ActionListener;
 public class LoginPage implements ActionListener{
 
     JFrame frame = new JFrame();
-    JPanel loginPanel = new JPanel();
+    //JPanel loginPanel = new JPanel();
     JButton loginBtn = new JButton("LOGIN");
     JButton newloginBtn = new JButton("New Customer? Sign Up Here");
-    JTextField emailTf = new JTextField("Staff@gmail.com");
-    JPasswordField passTf = new JPasswordField("abc123");
+    JTextField emailTf = new JTextField("Customer1@gmail.com");
+    JPasswordField passTf = new JPasswordField("4321");
     JLabel title = new JLabel("Welcome To The Golden Lodge");
     JLabel emailLbl = new JLabel("Email:");
     JLabel passLbl = new JLabel("Password:");
@@ -70,12 +70,14 @@ public class LoginPage implements ActionListener{
 
             if(loginDetails.containsKey(userEmail)){
                 if(userEmail.equals("Staff@gmail.com") && loginDetails.get(userEmail).equals(userPass)){
+                    System.out.println("Logged in with the email: " + userEmail + " and password: " + userPass);
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
                     new StaffPage();
                 }
                 else if(loginDetails.get(userEmail).equals(userPass)){
+                    System.out.println("Logged in with the email: " + userEmail + " and password: " + userPass);
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
@@ -83,16 +85,17 @@ public class LoginPage implements ActionListener{
                 }
                 else{
                     messageLbl.setForeground(Color.red);
-                    messageLbl.setText("wrong password :(");
+                    messageLbl.setText("wrong password");
                 }
             }
             else{
                 messageLbl.setForeground(Color.red);
-                messageLbl.setText("email not found :(");
+                messageLbl.setText("email not found");
             }
         }
 
         if(e.getSource()==newloginBtn){
+            System.out.println("Navigating to New Customer page");
             messageLbl.setText("new customer!");
             frame.dispose();
             openNewCustPage();

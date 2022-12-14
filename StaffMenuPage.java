@@ -41,14 +41,23 @@ public class StaffMenuPage implements MouseListener, ActionListener{
     
     String[] headings= {"Food ID","Food Name","Cost"};      
     DefaultTableModel model = new DefaultTableModel(headings,0);
-    JTable demoTable = new JTable(model);
+    JTable demoTable = new JTable(model)
+    {   
+        public boolean isCellEditable(int row, int column) {                
+            return false;               
+        }
+    };
     JScrollPane demoTableScroll = new JScrollPane(demoTable);
-    
+
     JLabel totalLbl = new JLabel();
     
     String[] oHeadings = {"Food Name","Cost"};
     DefaultTableModel oModel = new DefaultTableModel(oHeadings,0);
-    JTable oTable = new JTable(oModel);
+    JTable oTable = new JTable(oModel){
+        public boolean isCellEditable(int row, int column) {                
+            return false;               
+        }
+    };
     JScrollPane oTableScroll = new JScrollPane(oTable);
     
     JPanel box = new JPanel();
@@ -99,10 +108,20 @@ public class StaffMenuPage implements MouseListener, ActionListener{
         
         demoTable.addMouseListener(this);
         demoTableScroll.setBounds(30,80,400,350);
+        demoTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        demoTable.getTableHeader().setReorderingAllowed(false);
+        demoTable.getTableHeader().setResizingAllowed(false);
+        demoTable.getColumnModel().getColumn(0).setPreferredWidth(51);
+        demoTable.getColumnModel().getColumn(1).setPreferredWidth(315);
+        demoTable.getColumnModel().getColumn(2).setPreferredWidth(34);
         frame.add(demoTableScroll);
 
         oTable.addMouseListener(this);
         oTableScroll.setBounds(500,90,250,280);
+        oTable.getTableHeader().setReorderingAllowed(false);
+        oTable.getTableHeader().setResizingAllowed(false);
+        oTable.getColumnModel().getColumn(0).setPreferredWidth(216);
+        oTable.getColumnModel().getColumn(1).setPreferredWidth(34);
         frame.add(oTableScroll);
 
         confirmOrder.setBounds(500,390,250,40);
@@ -114,7 +133,7 @@ public class StaffMenuPage implements MouseListener, ActionListener{
     
     public void readMenu(){
         //reference: https://youtu.be/L2xczUN9aI0
-        String file = "menu.csv";
+        String file = "tempmenu.csv";
         try {
             try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
                 Object[] tableLines =  bR.lines().toArray();

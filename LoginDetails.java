@@ -7,7 +7,7 @@ public class LoginDetails {
 
     LoginDetails(){ //details are hardcoded but this will change in the final product
         loginDetails.put("Staff@gmail.com","abc123");
-        loginDetails.put("Customer1@gmail.com","ilikechips");
+        loginDetails.put("Customer1@gmail.com","4321");
     }
 
   //private

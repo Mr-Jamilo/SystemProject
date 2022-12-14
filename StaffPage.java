@@ -80,42 +80,46 @@ public class StaffPage implements ActionListener{ //used html for better formatt
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==backBtn){
             frame.dispose();
+            System.out.println("Logging out of staff account");
             new LoginPage(loginDetails.getLoginDetail());
         }
 
         if (e.getSource()==addOrderBtn){
             messageLbl.setForeground(Color.red);
+            System.out.println("Opening staff menu page");
             frame.dispose();
             new StaffMenuPage();
         }
         
         else if (e.getSource()==viewAllOrdersBtn){
             messageLbl.setForeground(Color.red);
+            System.out.println("Opening current orders page");
             frame.dispose();
             new CurrentOrders();
         }
         else if(e.getSource()==endDayBtn){
             messageLbl.setForeground(Color.red);
+            System.out.println("Opening end day page");
             frame.dispose();
             new EndDay();
         }
         else if(e.getSource()==viewWeeklyBtn){
-            messageLbl.setForeground(Color.red);
-            messageLbl.setText("Coming Soon!");
-            //frame.dispose();
-            //new WeeklyOverview();
+            // messageLbl.setForeground(Color.red);
+            // messageLbl.setText("Coming Soon!");
+            frame.dispose();
+            new WeeklyOverview();
         }
         else if(e.getSource()==viewArchivesBtn){
-            messageLbl.setForeground(Color.red);
-            messageLbl.setText("Coming Soon!");
-            //frame.dispose();
-            //new Archives();
+            // messageLbl.setForeground(Color.red);
+            // messageLbl.setText("Coming Soon!");
+            frame.dispose();
+            new Archives();
         }
         else if(e.getSource()==viewAllCustomersBtn){
-            messageLbl.setForeground(Color.red);
-            messageLbl.setText("Coming Soon!");
-            //frame.dispose();
-            //new AllCustomers();
+            //messageLbl.setForeground(Color.red);
+            //messageLbl.setText("Coming Soon!");
+            frame.dispose();
+            new AllCustomers();
         }
     }
 }

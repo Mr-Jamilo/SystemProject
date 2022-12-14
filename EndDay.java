@@ -66,12 +66,12 @@ public class EndDay implements ActionListener{
                     try {
                         totalCost = totalCost.add(new BigDecimal(dataRow[j]));
                     } catch (Exception e) {
-                        System.out.println("Not a number");
+                        //System.out.println("Not a number");
                     }
                 }
                 totalOrders++;
             }
-            System.out.println(totalCost);
+            //System.out.println(totalCost);
             String data[] = {Integer.toString(totalOrders),"£"+totalCost.toString()};
             model.addRow(data);
         } catch (Exception e) {
@@ -94,6 +94,5 @@ public class EndDay implements ActionListener{
             frame.dispose();
             new StaffPage();
         }
-
     }
 }
