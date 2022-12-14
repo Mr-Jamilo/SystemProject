@@ -4,7 +4,8 @@
 //TODO ADD TABBEDPANE
 //TODO CHANGE FRAME TO PANEL
 
-import javax.swing.JButton;
+import javax.swing.*;
+import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,7 +26,7 @@ import javax.swing.JTabbedPane;
 import java.math.BigDecimal;
 
 public class MenuPage extends JFrame implements MouseListener, ActionListener{
-    String foodItem;
+    String foodItem; //declaring variables
     String foodCost;
     int removeFoodIndex;
     int amountOrdered;
@@ -35,12 +36,11 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
     String[] templine;
     int highestID = 0;
     
-    LoginDetails loginDetails = new LoginDetails();
-    
-    JPanel mainpanel = new JPanel(null);
+    LoginDetails loginDetails = new LoginDetails(); //declaring gui
     JPanel orderpanel = new JPanel(null);
+    JPanel currentOrderpanel = new JPanel(null);
     JFrame frame = new JFrame();
-    JTabbedPane tabs = new JTabbedPane();
+    JTabbedPane tabsPane = new JTabbedPane();
     JLabel title = new JLabel("Menu");
     JTextField userSearch = new JTextField();
     TextPrompt searchPrompt = new TextPrompt("Search Name / ID", userSearch);
@@ -74,57 +74,58 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
     JLabel custOrderlbl = new JLabel("YOUR ORDER");
     
     MenuPage(){
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,600);
-        frame.setLayout(null);
-        frame.setVisible(true);
-        
-        //initFrame();
-        initComponentsintoFrame();
+        initFrame();
         readMenu();
     }
     
-    // public void initFrame(){
-        // this.setLayout(new GridLayout(1,1));
-        // this.add(tabs);
-        // this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // this.setSize(800,600);
-        // tabs.addTab("Menu",mainpanel);
-        // tabs.addTab("Order",orderpanel);
-        // this.setVisible(true);
-    // }
+    public void initFrame(){
+        this.add(tabsPane);
+        this.setSize(800,650);
+        this.setLayout(new GridLayout(1,1));
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+
+        initTabs();
+    }
     
-    public void initComponentsintoFrame(){
+    public void initTabs(){
+        initComponentsintoOrderPanel();
+        initComponentsintoCurrentOrdersPanel();
+        tabsPane.addTab("Menu", orderpanel);
+        tabsPane.addTab("Current Orders", currentOrderpanel);
+    }
+    
+    public void initComponentsintoOrderPanel(){
         title.setBounds(380, 10, 70, 30);
         title.setFont(new Font(null,Font.BOLD,20));
-        frame.add(title);    
+        orderpanel.add(title);    
         
         custOrderlbl.setBounds(570, 40, 200, 60);
         custOrderlbl.setFont(new Font(null,Font.BOLD,15));
-        frame.add(custOrderlbl);
+        orderpanel.add(custOrderlbl);
         
         backBtn.setBounds(700,20,70,30);
         backBtn.setFocusable(false);
         backBtn.addActionListener(this);
-        frame.add(backBtn);
+        orderpanel.add(backBtn);
         
         totalLbl.setBounds(500,490,250,40);
         totalLbl.setFont(new Font(null,Font.BOLD,15));
-        frame.add(totalLbl);
+        orderpanel.add(totalLbl);
         
         addFoodBtn.setBounds(140,480,100,70);
         addFoodBtn.setFocusable(false);
         addFoodBtn.addActionListener(this);
-        frame.add(addFoodBtn);
+        orderpanel.add(addFoodBtn);
         
         removeFoodBtn.setBounds(250,480,100,70);
         removeFoodBtn.setFocusable(false);
         removeFoodBtn.addActionListener(this);
-        frame.add(removeFoodBtn);
+        orderpanel.add(removeFoodBtn);
         
         userSearch.setBounds(30,50,200,20);
         searchPrompt.setForeground(Color.gray); 
-        frame.add(userSearch);
+        orderpanel.add(userSearch);
         
         demoTable.addMouseListener(this);
         demoTableScroll.setBounds(30,80,400,350);
@@ -134,7 +135,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
         demoTable.getColumnModel().getColumn(0).setPreferredWidth(50);
         demoTable.getColumnModel().getColumn(1).setPreferredWidth(316);
         demoTable.getColumnModel().getColumn(2).setPreferredWidth(34);
-        frame.add(demoTableScroll);
+        orderpanel.add(demoTableScroll);
 
         oTable.addMouseListener(this);
         oTableScroll.setBounds(500,90,250,280);
@@ -142,13 +143,17 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener{
         oTable.getTableHeader().setResizingAllowed(false);
         oTable.getColumnModel().getColumn(0).setPreferredWidth(216);
         oTable.getColumnModel().getColumn(1).setPreferredWidth(34);
-        frame.add(oTableScroll);
+        orderpanel.add(oTableScroll);
 
         confirmOrder.setBounds(500,390,250,40);
         confirmOrder.setFont(new Font(null,Font.BOLD,19));
         confirmOrder.setFocusable(false);
         confirmOrder.addActionListener(this);
-        frame.add(confirmOrder);
+        orderpanel.add(confirmOrder);
+    }
+
+    public void initComponentsintoCurrentOrdersPanel(){
+        
     }
     
     public void readMenu(){
