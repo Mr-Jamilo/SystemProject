@@ -6,23 +6,18 @@
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+
 import javax.swing.table.*;
-import java.awt.Font;
-import java.awt.Color;
+
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import javax.swing.JTabbedPane;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MenuPage extends JFrame implements MouseListener, ActionListener, KeyListener{
     LoginDetails loginDetails = new LoginDetails(); //declaring gui
@@ -50,6 +45,12 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     JButton logoutBtn = new JButton("<html><center>LOG OUT</center></html>");
     JButton confirmOrder = new JButton("<html><center>CONFIRM ORDER</center></html>");
     JLabel custOrderlbl = new JLabel("YOUR ORDER");
+    String[] filterHeadings = {"FILTER","Starters", "Soups", "Chef Special Dishes", "King Prawn Dishes", "Roast Duck Dishes", 
+                                "Chicken, Beef or Char Sui Dishes", "Egg Foo Young and Omelette Dishes", "Curry Dishes", "Chow Mein Dishes", 
+                                "Fried Rice Dishes", "Burgers and Sandwiches", "Side Orders", "Desserts", "Kids Meals", "Extra Deals", "Drinks"};
+    JComboBox<String> filterBox = new JComboBox<String>(filterHeadings);
+    
+    Map<String, int[]> idFilters = new HashMap<>();
 
     int amountOrdered2; //declaring variables for current orders panel
     JLabel title2 = new JLabel("Current Orders");
@@ -103,8 +104,10 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     public void initFrame(){
         this.add(tabsPane);
         this.setSize(800,650);
-        this.setLayout(new GridLayout(1,1));
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new GridLayout(1,1));
         this.setVisible(true);
 
         initTabs();
@@ -118,15 +121,43 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     }
     
     public void initComponentsintoMenuPanel(){
+        idFilters.put("FILTER", new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
+            37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,
+            80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,
+            117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140});
+        idFilters.put("Starters", new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14});
+        idFilters.put("Soups", new int[]{15,16,17,18,19});
+        idFilters.put("Chef Special Dishes", new int[]{20,21,22,23,24,25,26,27,28,29,30,31,32});
+        idFilters.put("King Prawn Dishes", new int[]{33,34,35,36,37,38,39,40,41,42,43});
+        idFilters.put("Roast Duck Dishes", new int[]{44,45,46,47,48,49,50,51,52});
+        idFilters.put("Chicken, Beef or Char Sui Dishes", new int[]{53,54,55,56,57,58,59,60,61});
+        idFilters.put("Egg Foo Young and Omelette Dishes", new int[]{62,63,64,65,66,67,68,69,70,71});
+        idFilters.put("Curry Dishes", new int[]{72,73,74,75,76});
+        idFilters.put("Chow Mein Dishes", new int[]{77,78,79,80,81});
+        idFilters.put("Fried Rice Dishes", new int[]{82,83,84,85,86,87,88});
+        idFilters.put("Burgers and Sandwiches", new int[]{89,90,91,92,93,94,95,96,97});
+        idFilters.put("Side Orders", new int[]{98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,
+            117,118,119,120,121,122});
+        idFilters.put("Desserts", new int[]{123,124});
+        idFilters.put("Kids Meals", new int[]{125,126});
+        idFilters.put("Extra Deals", new int[]{127,128,129,130,131,132,133,134});
+        idFilters.put("Drinks", new int[]{135,136,137,138,139,140});
+
+        
         title.setBounds(380, 10, 70, 30);
         title.setFont(new Font(null,Font.BOLD,20));
         menupanel.add(title);    
         
-        custOrderlbl.setBounds(570, 40, 200, 60);
+        filterBox.setSelectedIndex(0);
+        filterBox.setBounds(280,50,250,20);
+        filterBox.addActionListener(this);
+        menupanel.add(filterBox);
+        
+        custOrderlbl.setBounds(570, 55, 200, 60);
         custOrderlbl.setFont(new Font(null,Font.BOLD,15));
         menupanel.add(custOrderlbl);
         
-        logoutBtn.setBounds(700,20,70,30);
+        logoutBtn.setBounds(700,10,70,30);
         logoutBtn.setFocusable(false);
         logoutBtn.addActionListener(this);
         menupanel.add(logoutBtn);
@@ -161,14 +192,14 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         menupanel.add(demoTableScroll);
 
         oTable.addMouseListener(this);
-        oTableScroll.setBounds(500,90,250,280);
+        oTableScroll.setBounds(500,110,250,280);
         oTable.getTableHeader().setReorderingAllowed(false);
         oTable.getTableHeader().setResizingAllowed(false);
         oTable.getColumnModel().getColumn(0).setPreferredWidth(216);
         oTable.getColumnModel().getColumn(1).setPreferredWidth(34);
         menupanel.add(oTableScroll);
 
-        confirmOrder.setBounds(500,390,250,40);
+        confirmOrder.setBounds(500,410,250,40);
         confirmOrder.setFont(new Font(null,Font.BOLD,19));
         confirmOrder.setFocusable(false);
         confirmOrder.addActionListener(this);
@@ -180,26 +211,11 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         title2.setFont(new Font(null,Font.BOLD,20));
         currentOrderpanel.add(title2);
         
-        backBtn2.setBounds(700,20,70,30);
-        backBtn2.setFocusable(false);
-        backBtn2.addActionListener(this);
-        currentOrderpanel.add(backBtn2);
-        
         orderBtn.setBounds(190,450,90,50);
         orderBtn.setFocusable(false);
         orderBtn.addActionListener(this);
         currentOrderpanel.add(orderBtn);
         
-        paidBtn.setBounds(290,450,90,50);
-        paidBtn.setFocusable(false);
-        paidBtn.addActionListener(this);
-        currentOrderpanel.add(paidBtn);
-        
-        notpaidBtn.setBounds(390,450,90,50);
-        notpaidBtn.setFocusable(false);
-        notpaidBtn.addActionListener(this);
-        currentOrderpanel.add(notpaidBtn);
-
         currentTable.addMouseListener(this);
         ScrollTable.setBounds(30,80,100,200);
         currentTable.getTableHeader().setReorderingAllowed(false);
@@ -218,7 +234,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         //search by reading the file
         
         
-        String file = "tempmenu.csv";
+        String file = "menu.csv";
         boolean searchTermisInt = false;
         String searchTerm = userSearch.getText();
         System.out.println("Searching for " + searchTerm); 
@@ -293,7 +309,6 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
             // for (int i = 0; i < foodNum; i++){
                 // String foodName = model.getValueAt(i, 1).toString();
                 // if (foodName.contains(searchTerm)){
-                    // //model.addRow(new Object[]{model.getValueAt(i, 0), model.getValueAt(i, 1), model.getValueAt(i, 2)});
                     // String tempFoodId = model.getValueAt(i, 0).toString();
                     // String tempFoodName = model.getValueAt(i, 1).toString();
                     // String tempFoodPrice = model.getValueAt(i, 2).toString();
@@ -323,8 +338,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         //reference: https://youtu.be/L2xczUN9aI0
         
         System.out.println("Displaying menu");
-        String file = "tempmenu.csv";
-
+        String file = "menu.csv";
         
         try {
             try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
@@ -333,8 +347,9 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
                 for (int i = 0; i < tableLines.length;i++){
                     String line = tableLines[i].toString().trim();
                     String[] dataRow = line.split(",");
-                    model.addRow(dataRow);
+                       model.addRow(dataRow);
                 }
+                bR.close();
             }
         }
         catch (Exception e) {
@@ -366,9 +381,36 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     
     public void actionPerformed(ActionEvent e){
         if (e.getSource()==logoutBtn){
-            menuFrame.setVisible(false);
+            this.dispose();
             System.out.println("Logging out of customer account");
             new LoginPage(loginDetails.getLoginDetail());
+        }
+        
+        if (e.getSource()==filterBox){
+            
+            String selectedHeading = (String)filterBox.getSelectedItem();
+            int[] idsToDisplay = idFilters.get(selectedHeading);
+            
+            clearMenuTable();
+            
+            try (BufferedReader bR = new BufferedReader(new FileReader("menu.csv"))) {
+                Object[] tableLines = bR.lines().toArray();
+                
+                // Iterate through each line of the menu
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString().trim();
+                    String[] dataRow = line.split(",");
+                    int id = Integer.parseInt(dataRow[0]);
+                    // Check if the menu item's ID is in the list of IDs to display
+                    if (Arrays.stream(idsToDisplay).anyMatch(x -> x == id)){
+                        model.addRow(dataRow);
+                    }
+                }
+                bR.close();
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         
         if(e.getSource()==addFoodBtn){
@@ -393,8 +435,8 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
                 for(int i = 0;i < amountOrdered;i++){
                     String tempfoodItem = (String) oTable.getModel().getValueAt(i,0);
                     String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                    fr.write(tempfoodItem+","+tempfoodCost);
-                    fr.write("\r\n");
+                    fr.append(tempfoodItem+","+tempfoodCost);
+                    fr.append("\r\n");
                 }
                 fr.close();
             } 

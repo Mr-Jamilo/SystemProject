@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 
 //login page
 
@@ -56,7 +57,9 @@ public class LoginPage implements ActionListener{
         frame.add(newloginBtn);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,600);
+        frame.setResizable(false);
+        frame.setSize(800,650);
+        frame.setLocationRelativeTo(null);
         frame.setLayout(null);
         frame.setVisible(true);
     } 
