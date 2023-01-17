@@ -6,9 +6,7 @@
 
 import javax.swing.*;
 import java.awt.*;
-
 import javax.swing.table.*;
-
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -347,7 +345,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
                 for (int i = 0; i < tableLines.length;i++){
                     String line = tableLines[i].toString().trim();
                     String[] dataRow = line.split(",");
-                       model.addRow(dataRow);
+                    model.addRow(dataRow);
                 }
                 bR.close();
             }
@@ -383,7 +381,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         if (e.getSource()==logoutBtn){
             this.dispose();
             System.out.println("Logging out of customer account");
-            new LoginPage(loginDetails.getLoginDetail());
+            new LoginPage(loginDetails.getLoginDetails());
         }
         
         if (e.getSource()==filterBox){
@@ -481,11 +479,12 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
                     }
                 } catch(Exception e){
                     
-                    System.out.println("file is empty");
+                    //System.out.println("file is empty");
                 }
             }
             highestID = highestID + 1;
             //System.out.println(highestID);
+            bR.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

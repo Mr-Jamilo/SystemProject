@@ -81,7 +81,7 @@ public class StaffPage implements ActionListener{ //used html for better formatt
         if (e.getSource()==backBtn){
             frame.dispose();
             System.out.println("Logging out of staff account");
-            new LoginPage(loginDetails.getLoginDetail());
+            new LoginPage(loginDetails.getLoginDetails());
         }
 
         if (e.getSource()==addOrderBtn){

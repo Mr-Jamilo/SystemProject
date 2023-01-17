@@ -1,2 +1,3 @@
-Staff@gmail.com,abc123
-Customer1@gmail.com,ilikechips
+Id,First Name,Surname,Email,Password,Points
+1,,,Staff@gmail.com,abc123,0
+2,John,Smith,Customer1@gmail.com,4321,3700
