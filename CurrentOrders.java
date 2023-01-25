@@ -90,7 +90,7 @@ public class CurrentOrders implements MouseListener, ActionListener{
         String file = "tempcurrentorders.csv";
         try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
             Object[] tableLines =  bR.lines().toArray();
-            for (int i = 0; i < tableLines.length;i++){
+            for (int i = 1; i < tableLines.length;i++){
                 String line = tableLines[i].toString().trim();
                 String[] dataRow = line.split(",");
                 model.addRow(dataRow);
@@ -119,7 +119,7 @@ public class CurrentOrders implements MouseListener, ActionListener{
                     String line = tableLines[i].toString();
                     String[] dataRow = line.split(",");
                     if (dataRow[0].equals(orderID)){
-                        for (int j = 1; j < dataRow.length;j++){
+                        for (int j = 1; j < dataRow.length - 2;j++){
                             oModel.addRow(new Object[]{dataRow[j]});
                             amountOrdered = amountOrdered + 1;
                         }
@@ -143,6 +143,7 @@ public class CurrentOrders implements MouseListener, ActionListener{
             }
             
             removeOrderfromFile();
+            removeOrderfromCustomerFile();
             model.removeRow(table.getSelectedRow());
             clearTable();
         }
@@ -167,6 +168,33 @@ public class CurrentOrders implements MouseListener, ActionListener{
         int selectedRowIndex = table.getSelectedRow();
         String orderID = model.getValueAt(selectedRowIndex,0).toString();
         String file = "tempcurrentorders.csv";
+        try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            Object[] tableLines =  bR.lines().toArray();
+            for (int i = 0; i < tableLines.length;i++){
+                String line = tableLines[i].toString();
+                String[] dataRow = line.split(",");
+                if (dataRow[0].equals(orderID)){
+                    try (FileWriter fW = new FileWriter(file)){
+                        for (int j = 0; j < tableLines.length;j++){
+                            if (j != i){
+                                fW.append(tableLines[j].toString());
+                                fW.write("\r\n");
+                            }
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Error writing to file");                            
+                    }
+                }   
+            }
+        } catch (Exception ex) {
+            System.out.println("Error reading file");
+        }
+    }
+
+    public void removeOrderfromCustomerFile(){
+        int selectedRowIndex = table.getSelectedRow();
+        String orderID = model.getValueAt(selectedRowIndex,0).toString();
+        String file = "custorders.csv";
         try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
             Object[] tableLines =  bR.lines().toArray();
             for (int i = 0; i < tableLines.length;i++){

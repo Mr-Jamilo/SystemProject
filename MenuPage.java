@@ -27,6 +27,8 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     
     String foodItem; //declaring variables for menu panel
     String foodCost;
+    String strCustomerID = "";
+    String strCustomerName = "";
     int removeFoodIndex;
     int amountOrdered;
     BigDecimal totalcost = new BigDecimal(0);
@@ -76,27 +78,29 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
     };
     JScrollPane oTableScroll = new JScrollPane(oTable);
     
-    String[] currentHeadings = {"Order ID"};
-    DefaultTableModel currentModel = new DefaultTableModel(currentHeadings,0);
-    JTable currentTable = new JTable(currentModel){
+    String[] currentIDHeadings = {"Order ID"};
+    DefaultTableModel currentIDModel = new DefaultTableModel(currentIDHeadings,0);
+    JTable currentIDTable = new JTable(currentIDModel){
         public boolean isCellEditable(int row, int column){
             return false;
         }
     };
-    JScrollPane ScrollTable = new JScrollPane(currentTable);
+    JScrollPane currentIDScrollTable = new JScrollPane(currentIDTable);
 
-    String[] ordersHeadings = {"Order"};
-    DefaultTableModel ordersModel = new DefaultTableModel(ordersHeadings,0);
-    JTable ordersTable = new JTable(ordersModel){
+    String[] currentOrdersHeadings = {"Order"};
+    DefaultTableModel currentOrdersModel = new DefaultTableModel(currentOrdersHeadings,0);
+    JTable currentOrdersTable = new JTable(currentOrdersModel){
         public boolean isCellEditable(int row, int column){
             return false;
         }
     };
-    JScrollPane ordersTableScroll = new JScrollPane(ordersTable);
+    JScrollPane currentOrdersTableScroll = new JScrollPane(currentOrdersTable);
     
-    MenuPage(){
+    MenuPage(String userEmail, String userPassword){
         initFrame();
         readMenu();
+        readCurrentCustomerOrdersID();
+        getCustomerIdandName(userEmail, userPassword);
     }
     
     public void initFrame(){
@@ -123,9 +127,9 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
             37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,
             80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,
             117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140});
-        idFilters.put("Starters", new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14});
-        idFilters.put("Soups", new int[]{15,16,17,18,19});
-        idFilters.put("Chef Special Dishes", new int[]{20,21,22,23,24,25,26,27,28,29,30,31,32});
+            idFilters.put("Starters", new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14});
+            idFilters.put("Soups", new int[]{15,16,17,18,19});
+            idFilters.put("Chef Special Dishes", new int[]{20,21,22,23,24,25,26,27,28,29,30,31,32});
         idFilters.put("King Prawn Dishes", new int[]{33,34,35,36,37,38,39,40,41,42,43});
         idFilters.put("Roast Duck Dishes", new int[]{44,45,46,47,48,49,50,51,52});
         idFilters.put("Chicken, Beef or Char Sui Dishes", new int[]{53,54,55,56,57,58,59,60,61});
@@ -196,14 +200,14 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         oTable.getColumnModel().getColumn(0).setPreferredWidth(216);
         oTable.getColumnModel().getColumn(1).setPreferredWidth(34);
         menupanel.add(oTableScroll);
-
+        
         confirmOrder.setBounds(500,410,250,40);
         confirmOrder.setFont(new Font(null,Font.BOLD,19));
         confirmOrder.setFocusable(false);
         confirmOrder.addActionListener(this);
         menupanel.add(confirmOrder);
     }
-
+    
     public void initComponentsintoCurrentOrdersPanel(){
         title2.setBounds(330,10,250,30); 
         title2.setFont(new Font(null,Font.BOLD,20));
@@ -214,18 +218,52 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         orderBtn.addActionListener(this);
         currentOrderpanel.add(orderBtn);
         
-        currentTable.addMouseListener(this);
-        ScrollTable.setBounds(30,80,100,200);
-        currentTable.getTableHeader().setReorderingAllowed(false);
-        currentTable.getTableHeader().setResizingAllowed(false);
-        currentOrderpanel.add(ScrollTable);
+        currentIDTable.addMouseListener(this);
+        currentIDScrollTable.setBounds(30,80,100,200);
+        currentIDTable.getTableHeader().setReorderingAllowed(false);
+        currentIDTable.getTableHeader().setResizingAllowed(false);
+        currentOrderpanel.add(currentIDScrollTable);
         
-        ordersTableScroll.setBounds(200,80,400,280);
-        ordersTable.getTableHeader().setReorderingAllowed(false);
-        ordersTable.getTableHeader().setResizingAllowed(false);
-        currentOrderpanel.add(ordersTableScroll);
+        currentOrdersTableScroll.setBounds(200,80,400,280);
+        currentOrdersTable.getTableHeader().setReorderingAllowed(false);
+        currentOrdersTable.getTableHeader().setResizingAllowed(false);
+        currentOrderpanel.add(currentOrdersTableScroll);
+    }
+    public void readMenu(){
+        //reference: https://youtu.be/L2xczUN9aI0
+        
+        System.out.println("Displaying menu");
+        String file = "menu.csv";
+        
+        try {
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines = bR.lines().toArray();
+                
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString().trim();
+                    String[] dataRow = line.split(",");
+                    model.addRow(dataRow);
+                }
+                bR.close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        //readOrderID();
+        // try {
+        //     try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+        //         while(line != null) {
+        //             line = file.trim();
+        //             if(line != null) {
+        //                 String[] dataRow = line.split(",");
+        //                 model.addRow(dataRow);
+        //             }
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
     }
     
     public void searchFoodItem(){
@@ -240,6 +278,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         try {
             int intSearchTerm = Integer.parseInt(searchTerm);
             searchTermisInt = true;
+            System.out.println("Search term is an integer");
 
         } catch (Exception e) {
             System.out.println("Search term is not an integer");
@@ -266,24 +305,6 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         // boolean searchTermisInt = false; 
         // int foodNum = model.getRowCount();
@@ -332,49 +353,42 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         // }
     }
     
-    public void readMenu(){
-        //reference: https://youtu.be/L2xczUN9aI0
-        
-        System.out.println("Displaying menu");
-        String file = "menu.csv";
-        
-        try {
-            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
-                Object[] tableLines = bR.lines().toArray();
-                
-                for (int i = 0; i < tableLines.length;i++){
-                    String line = tableLines[i].toString().trim();
-                    String[] dataRow = line.split(",");
-                    model.addRow(dataRow);
-                }
-                bR.close();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // try {
-        //     try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
-        //         while(line != null) {
-        //             line = file.trim();
-        //             if(line != null) {
-        //                 String[] dataRow = line.split(",");
-        //                 model.addRow(dataRow);
-        //             }
-        //         }
-        //     }
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-    }
     
     public void mouseClicked(MouseEvent mevt){  
-        int selectedRowIndex = demoTable.getSelectedRow();
-        foodItem = (String) demoTable.getModel().getValueAt(selectedRowIndex, 1);
-        foodCost = (String) demoTable.getModel().getValueAt(selectedRowIndex, 2);
-
         removeFoodIndex = oTable.getSelectedRow();
+        
+        if (mevt.getClickCount() == 2 && mevt.getButton() == MouseEvent.BUTTON1 && mevt.getSource() == demoTable){
+            int selectedRowIndex = demoTable.getSelectedRow();
+            foodItem = (String) demoTable.getModel().getValueAt(selectedRowIndex, 1);
+            foodCost = (String) demoTable.getModel().getValueAt(selectedRowIndex, 2);
+            System.out.println("Added " + foodItem + " to order");
+            String[] data = {foodItem,foodCost};
+            oModel.addRow(data);
+            amountOrdered = amountOrdered + 1;
+        }
+        if (mevt.getClickCount() == 2 && mevt.getButton() == MouseEvent.BUTTON1 && mevt.getSource() == currentIDTable){
+            System.out.println("Reading Order");
+            clearCurrentOrdersTable();
+            //readCurrentCustomerOrders();
+            int selectedRowIndex = currentIDTable.getSelectedRow();
+            String orderID = currentIDModel.getValueAt(selectedRowIndex,0).toString();
+            String file = "custorders.csv";
+            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+                Object[] tableLines =  bR.lines().toArray();
+                for (int i = 0; i < tableLines.length;i++){
+                    String line = tableLines[i].toString();
+                    String[] dataRow = line.split(",");
+                    if (dataRow[0].equals(orderID)){
+                        for (int j = 1; j < dataRow.length - 1;j++){
+                            currentOrdersModel.addRow(new Object[]{dataRow[j]});
+                            amountOrdered = amountOrdered + 1;
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println("Error reading file");
+            }
+        }
     } 
     
     public void actionPerformed(ActionEvent e){
@@ -419,7 +433,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         }
         else if(e.getSource()==removeFoodBtn){
             try {
-                String DelFoodItem = (String) oTable.getModel().getValueAt(removeFoodIndex, 1);
+                //String DelFoodItem = (String) oTable.getModel().getValueAt(removeFoodIndex, 1);
                 System.out.println("Removed " + foodItem + " from order");
                 oModel.removeRow(removeFoodIndex);
                 amountOrdered = amountOrdered - 1;
@@ -428,19 +442,43 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
             }
         }
         else if(e.getSource()==confirmOrder){
+            getOrderID();
+            BigDecimal totalCost = new BigDecimal("0.00");
+            totalcost = new BigDecimal("0.00");
             try {
-                FileWriter fr = new FileWriter("custorder.csv");
+                FileWriter fr = new FileWriter("custorders.csv", true);
+                String strhighestID = Integer.toString(highestID);
+                fr.append(strhighestID + ",");
+                if(amountOrdered > oTable.getRowCount()) {
+                    amountOrdered = oTable.getRowCount();
+                }
                 for(int i = 0;i < amountOrdered;i++){
                     String tempfoodItem = (String) oTable.getModel().getValueAt(i,0);
                     String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                    fr.append(tempfoodItem+","+tempfoodCost);
-                    fr.append("\r\n");
+                    BigDecimal decimalFoodcost = new BigDecimal(tempfoodCost);
+                    totalCost = totalCost.add(decimalFoodcost);
+                    fr.append(tempfoodItem+",");
                 }
+                fr.append(totalCost.toString() + "\r\n");
                 fr.close();
             } 
             catch (Exception e1) {
                 System.out.println("error e1");
             }
+            readCurrentCustomerOrdersID();
+            
+            
+            for(int i = 0; i < amountOrdered;i++){
+                String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
+                BigDecimal cost = new BigDecimal(tempfoodCost);
+                totalcost = totalcost.add(cost);
+            }
+            System.out.println(totalcost);
+            totalLbl.setText("Total: £" + totalcost);
+            
+            writeToCurrentOrdersFile();
+            clearOrderTable();
+            amountOrdered = 0;
             
             // try {
             //     FileWriter fr = new FileWriter("currentorders.csv");
@@ -452,18 +490,6 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
             // } catch (Exception e2) {
             //     System.out.println("error e2");
             // }
-            
-            
-            for(int i = 0; i < amountOrdered;i++){
-                String tempfoodCost = (String) oTable.getModel().getValueAt(i,1);
-                BigDecimal cost = new BigDecimal(tempfoodCost);
-                totalcost = totalcost.add(cost);
-            }
-            System.out.println(totalcost);
-            totalLbl.setText("Total: £" + totalcost);
-            getOrderID();
-            writeToCurrentOrdersFile();
-            clearOrderTable();
         }
     }
     
@@ -513,8 +539,7 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
                 fW.append(data[i+1] + ",");
             }
             String strtotalcost = totalcost.toString();
-            fW.append(strtotalcost);
-            fW.append("\r\n");
+            fW.append(strtotalcost + "," + strCustomerID + "," + strCustomerName + "\r\n");
             fW.close();
 
         } catch(Exception exception){
@@ -534,6 +559,76 @@ public class MenuPage extends JFrame implements MouseListener, ActionListener, K
         int lastRow = amountOrdered - 1;
         for(int i = lastRow;i>=0;i--){
             oModel.removeRow(i);
+        }
+    }
+    
+    public void getCustomerIdandName(String userEmail,String userPassword){
+        //System.out.println(userEmail + "," + userPassword);
+        try (BufferedReader bR = new BufferedReader(new FileReader("logins.csv"))) {
+            while((line = bR.readLine()) != null){
+                templine = line.split(",");
+                if(templine[3].equals(userEmail) && templine[4].equals(userPassword)){
+                    strCustomerID = templine[0];
+                    strCustomerName = templine[1];
+                    //System.out.println(strCustomerID);
+                }
+            }
+            bR.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // public void readCurrentCustomerOrders(){
+        // clearCurrentOrdersTable();
+            
+        // int selectedRowIndex = currentIDTable.getSelectedRow();
+        // String orderID = currentOrdersModel.getValueAt(selectedRowIndex,0).toString();
+        // String file = "custorders.csv";
+        // try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            // Object[] tableLines =  bR.lines().toArray();
+            // for (int i = 0; i < tableLines.length;i++){
+                // String line = tableLines[i].toString();
+                // String[] dataRow = line.split(",");
+                // if (dataRow[0].equals(orderID)){
+                    // for (int j = 1; j < dataRow.length && j < currentOrdersModel.getColumnCount();j++){
+                        // currentOrdersModel.addRow(new Object[]{dataRow[j]});
+                        // amountOrdered = amountOrdered + 1;
+                    // }
+                // }
+            // }
+        // } catch (Exception ex) {
+            // System.out.println("Error reading file");
+        // }
+    // }
+    
+    public void readCurrentCustomerOrdersID(){
+        clearCustomerOrdersIDTable();
+        
+        String file = "custorders.csv";
+        try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            Object[] tableLines =  bR.lines().toArray();
+            for (int i = 0; i < tableLines.length;i++){
+                String line = tableLines[i].toString().trim();
+                String[] dataRow = line.split(",");
+                currentIDModel.addRow(dataRow);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void clearCustomerOrdersIDTable(){
+        int lastRow = currentIDModel.getRowCount() - 1;
+        for(int i = lastRow;i>=0;i--){
+            currentIDModel.removeRow(i);
+        }
+    }
+    
+    public void clearCurrentOrdersTable(){
+        int lastRow = currentOrdersModel.getRowCount() - 1;
+        for(int i = lastRow;i>=0;i--){
+            currentOrdersModel.removeRow(i);
         }
     }
     

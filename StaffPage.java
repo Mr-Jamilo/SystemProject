@@ -72,7 +72,9 @@ public class StaffPage implements ActionListener{ //used html for better formatt
         frame.add(viewAllCustomersBtn);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,600);
+        frame.setResizable(false);
+        frame.setSize(800,650);
+        frame.setLocationRelativeTo(null);
         frame.setLayout(null);
         frame.setVisible(true);
     }
@@ -119,7 +121,7 @@ public class StaffPage implements ActionListener{ //used html for better formatt
             //messageLbl.setForeground(Color.red);
             //messageLbl.setText("Coming Soon!");
             frame.dispose();
-            new AllCustomers();
+            new CustomerLoginsPage();
         }
     }
 }

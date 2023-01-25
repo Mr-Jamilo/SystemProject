@@ -1,3 +1,5 @@
-Id,First Name,Surname,Email,Password,Points
-1,,,Staff@gmail.com,abc123,0
-2,John,Smith,Customer1@gmail.com,4321,3700
+Id,Forename,Surname,Email,Password,Points
+0,,,Staff@gmail.com,abc123,0
+1,John,Smith,Customer1@gmail.com,4321,3700
+2,Jamie,Lo,hi@gmail.com,password123,5234
+3,Lamie,Jo,no@gmail.com,nachocheese123,1224

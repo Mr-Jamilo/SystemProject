@@ -1,5 +1,3 @@
-1,Spare Ribs in Fruity O.K Sauce,Chicken Wings in Fruity O.K Sauce,Crispy Pancake Rolls Peking Style,10.4
-2,Salt and Pepper Chicken Wings,Crispy Vegetarium Mini spring Rolls,5.0
-3,Crispy Pancake Rolls Peking Style,Chicken Wings in Fruity O.K Sauce,5.6
-9,Salt & Pepper Chicken Wings,3.5
-10,Salt & Pepper Chicken Wings,Fried Pork Dumplings,6.7
+OrderId,(Order),Cost,CustomerId,CustomerForeName
+1,Spare Ribs in Fruity O.K Sauce,Prawn Crackers,Prawn Cocktail,8.30,1,John
+3,Chicken Wings in Fruity O.K Sauce,Prawn Cocktail,Barbecued Spare Ribs,10.30,1,John

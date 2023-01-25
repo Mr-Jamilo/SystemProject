@@ -14,11 +14,10 @@ import java.awt.event.ActionListener;
 public class LoginPage implements ActionListener{
 
     JFrame frame = new JFrame();
-    //JPanel loginPanel = new JPanel();
     JButton loginBtn = new JButton("LOGIN");
     JButton newloginBtn = new JButton("New Customer? Sign Up Here");
-    JTextField emailTf = new JTextField("Customer1@gmail.com");
-    JPasswordField passTf = new JPasswordField("4321");
+    JTextField emailTf = new JTextField("Staff@gmail.com");
+    JPasswordField passTf = new JPasswordField("abc123");
     JLabel title = new JLabel("Welcome To The Golden Lodge");
     JLabel emailLbl = new JLabel("Email:");
     JLabel passLbl = new JLabel("Password:");
@@ -81,7 +80,7 @@ public class LoginPage implements ActionListener{
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
-                    new MenuPage();
+                    new MenuPage(userEmail,userPass);
                 }
                 else{
                     messageLbl.setForeground(Color.red);
