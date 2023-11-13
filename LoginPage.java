@@ -3,51 +3,65 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-//login page
+import java.util.Base64;
 
 public class LoginPage implements ActionListener{
-
+    
     JFrame frame = new JFrame();
-    JButton loginBtn = new JButton("LOGIN");
-    JButton newloginBtn = new JButton("New Customer? Sign Up Here");
-    JTextField emailTf = new JTextField("Staff@gmail.com");
-    JPasswordField passTf = new JPasswordField("abc123");
+    //Button loginBtn = new JButton("LOGIN");
+    CustomLoginButton loginBtn = new CustomLoginButton("LOGIN", Color.decode("#51c151"));
+    JButton newloginBtn = new JButton("<html><u>Sign Up Here</u></html>");
+    RoundedTextField emailTf = new RoundedTextField(Color.BLACK);
+    RoundedPasswordField passTf = new RoundedPasswordField(Color.BLACK);
     JLabel title = new JLabel("Welcome To The Golden Lodge");
-    JLabel emailLbl = new JLabel("Email:");
-    JLabel passLbl = new JLabel("Password:");
+    JLabel newLoginLbl = new JLabel("New Customer?");
     JLabel messageLbl = new JLabel();
+    TextPrompt emailSearchPrompt = new TextPrompt("Email", emailTf);
+    TextPrompt passwordSearchPrompt = new TextPrompt("Password", passTf);
     HashMap<String,String> loginDetails = new HashMap<String,String>();
-
+    
     LoginPage(HashMap<String,String> loginDetailGLB){
         loginDetails = loginDetailGLB;
-        title.setBounds(300,30,300,40);
-        emailLbl.setBounds(200,100,75,25);
-        passLbl.setBounds(200,150,75,25);
+        title.setBounds(170,50,450,40);
+        title.setFont(new Font(null,Font.BOLD,30));
         
-        messageLbl.setBounds(275,280,280,35);
-        messageLbl.setFont(new Font(null,Font.BOLD,25));
+        messageLbl.setBounds(275,380,280,35);
+        messageLbl.setFont(new Font(null,Font.BOLD,15));
         
-        emailTf.setBounds(275,100,200,25);
-        passTf.setBounds(275,150,200,25);
+        emailSearchPrompt.setFont(new Font(null,Font.PLAIN,15));
+        emailSearchPrompt.setForeground(Color.GRAY);
+        emailTf.setBounds(255,150,260,40);
+        emailTf.setFont(new Font(null,Font.PLAIN,15));
+        emailTf.setText("Staff@gmail.com");
         
-        newloginBtn.setBounds(200,195,275,25);
+        passwordSearchPrompt.setFont(new Font(null,Font.PLAIN,15));
+        passwordSearchPrompt.setForeground(Color.GRAY);
+        passTf.setBounds(255,210,260,40);
+        passTf.setFont(new Font(null,Font.PLAIN,15));
+        passTf.setText("abc123");
+        
+        newLoginLbl.setBounds(270,330,275,35);
+        newLoginLbl.setFont(new Font(null,Font.BOLD,15));
+        
+        newloginBtn.setBounds(370,335,140,25);
+        newloginBtn.setFont(new Font(null, Font.BOLD, 15));
+        newloginBtn.setForeground(Color.decode("#1464f6"));
+        newloginBtn.setOpaque(false);
+        newloginBtn.setContentAreaFilled(false);
+        newloginBtn.setBorderPainted(false);
         newloginBtn.setFocusable(false);
         newloginBtn.addActionListener(this);
         
-        loginBtn.setBounds(200,230,275,35);
+        loginBtn.setBounds(240,275,285,40);
         loginBtn.setFocusable(false);
         loginBtn.addActionListener(this);
         
         //frame.add(title);
-        frame.add(emailLbl);
-        frame.add(passLbl);
         frame.add(messageLbl);
+        frame.add(newLoginLbl);
         frame.add(emailTf);
         frame.add(passTf);
         frame.add(loginBtn);
@@ -56,6 +70,7 @@ public class LoginPage implements ActionListener{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setSize(800,650);
+        frame.getContentPane().setBackground(Color.decode("#a4cbfe"));
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
         frame.setVisible(true);
@@ -66,21 +81,23 @@ public class LoginPage implements ActionListener{
         if(e.getSource()==loginBtn){
             String userEmail = emailTf.getText();
             String userPass = String.valueOf(passTf.getPassword());
+            byte[] encodedEmail = Base64.getEncoder().encode(userEmail.getBytes());
+            byte[] encodedPass = Base64.getEncoder().encode(userPass.getBytes());
             
-            if(loginDetails.containsKey(userEmail)){
-                if(userEmail.equals("Staff@gmail.com") && loginDetails.get(userEmail).equals(userPass)){
-                    System.out.println("Logged in with the email: " + userEmail + " and password: " + userPass);
+            if(loginDetails.containsKey(new String(encodedEmail))){
+                if(userEmail.equals("Staff@gmail.com") && loginDetails.get(new String(encodedEmail)).equals(new String(encodedPass))){
+                    System.out.println("Logged in with the email: " + new String(encodedEmail) + " and password: " + new String(encodedPass));
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
                     new StaffPage();
                 }
-                else if(loginDetails.get(userEmail).equals(userPass)){
-                    System.out.println("Logged in with the email: " + userEmail + " and password: " + userPass);
+                else if(loginDetails.get(new String(encodedEmail)).equals(new String(encodedPass))){
+                    System.out.println("Logged in with the email: " + new String(encodedEmail) + " and password: " + new String(encodedPass));
                     messageLbl.setForeground(Color.green);
                     messageLbl.setText("logged in :)");
                     frame.dispose();
-                    new MenuPage(userEmail,userPass);
+                    new MenuPage(new String(encodedEmail),new String(encodedPass));
                 }
                 else{
                     messageLbl.setForeground(Color.red);
