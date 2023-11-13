@@ -1,5 +1,3 @@
-//TODO read logins.csv
-//TODO use the logins to add to hashmap
 import java.io.BufferedReader;
 import java.io.FileReader;  //login details
 import java.util.HashMap;  //login details 
