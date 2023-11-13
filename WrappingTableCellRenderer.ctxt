@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=WrappingTableCellRenderer
+comment1.params=
+comment1.target=WrappingTableCellRenderer()
+comment2.params=b
+comment2.target=void\ setWrapStyleWord(boolean)
+comment3.params=b
+comment3.target=void\ setLineWrap(boolean)
+comment4.params=table\ value\ isSelected\ hasFocus\ row\ column
+comment4.target=java.awt.Component\ getTableCellRendererComponent(javax.swing.JTable,\ java.lang.Object,\ boolean,\ boolean,\ int,\ int)
+numComments=5

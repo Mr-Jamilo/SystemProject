@@ -5,17 +5,18 @@ import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Base64;
 import javax.swing.RowSorter;
 import java.util.List;
 
 public class CustomerLoginsPage implements ActionListener, KeyListener{
     JFrame frame = new JFrame();
     JLabel title = new JLabel("Customer Details");
-    JButton backBtn = new JButton("<html><center>BACK</center></html>");
-    JTextField userSearch = new JTextField();
+    CustomBackButton backBtn = new CustomBackButton("BACK", Color.decode("#920000"));
+    RoundedTextField userSearch = new RoundedTextField(Color.BLACK);
     TextPrompt searchPrompt = new TextPrompt("Search Forename / ID", userSearch);
     String[] sortHeadings = {"SORT","ID","Forename","Surname"};
-    JComboBox<String> sortBox = new JComboBox<String>(sortHeadings);
+    RoundedComboBox sortBox = new RoundedComboBox(sortHeadings);
 
     String[] headings= {"ID","Forename","Surname","Email","Password","Points"}; //declaring table 
     DefaultTableModel model = new DefaultTableModel(headings,0);
@@ -37,7 +38,7 @@ public class CustomerLoginsPage implements ActionListener, KeyListener{
         title.setFont(new Font(null,Font.BOLD,20));
         frame.add(title);
 
-        backBtn.setBounds(700,10,70,30);
+        backBtn.setBounds(680,15,80,30);
         backBtn.setFocusable(false);
         backBtn.addActionListener(this);
         frame.add(backBtn);
@@ -52,18 +53,22 @@ public class CustomerLoginsPage implements ActionListener, KeyListener{
         sortBox.addActionListener(this);
         frame.add(sortBox);
         
+        TableCellRenderer rendererFromHeader = customerTable.getTableHeader().getDefaultRenderer();
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) rendererFromHeader;
+        headerRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+        customerTable.getTableHeader().setDefaultRenderer(new TableHeaderColour());
         customerTableScroll.setBounds(30,100,700,400);
         customerTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         customerTable.getTableHeader().setReorderingAllowed(false);
         customerTable.getTableHeader().setResizingAllowed(false);
         customerTable.getColumnModel().getColumn(0).setPreferredWidth(50);
         customerTable.getColumnModel().getColumn(3).setPreferredWidth(150);
-        
         frame.add(customerTableScroll);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setSize(800,650);
+        frame.getContentPane().setBackground(Color.decode("#a4cbfe"));
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
         frame.setVisible(true);
@@ -74,17 +79,25 @@ public class CustomerLoginsPage implements ActionListener, KeyListener{
         
         System.out.println("Displaying details");
         String file = "logins.csv";
-        
         try {
             try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
                 Object[] tableLines = bR.lines().toArray();
-                
+                long start = System.nanoTime();
                 for (int i = 2; i < tableLines.length;i++){
                     String line = tableLines[i].toString().trim();
                     String[] dataRow = line.split(",");
+                    for (int j = 0; j < dataRow.length; j++){
+                        if (j == 3){
+                            String encryptedEmail = dataRow[j];
+                            byte[] decryptedEmail = Base64.getDecoder().decode(new String(encryptedEmail));
+                            dataRow[j] = new String(decryptedEmail);
+                        }
+                    }
                     model.addRow(dataRow);
                 }
+                long end = System.nanoTime();
                 bR.close();
+                System.out.println("Time taken to decode customer details: " + (end - start) + " nanoseconds");
             }
         }
         catch (Exception e) {

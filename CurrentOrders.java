@@ -12,10 +12,10 @@ public class CurrentOrders implements MouseListener, ActionListener{
     int amountOrdered;
     JFrame frame = new JFrame();
     JLabel title = new JLabel("CURRENT ORDERS");
-    JButton orderBtn = new JButton("<html><center>READ ORDER</center></html>");
-    JButton backBtn = new JButton("<html><center>BACK</center></html>");
-    JButton paidBtn = new JButton("<html><center>ORDER PAID</center></html>");
-    JButton notpaidBtn = new JButton("<html><center>ORDER NOT PAID</center></html>");
+    RoundedButton orderBtn = new RoundedButton("READ ORDER");
+    CustomBackButton backBtn = new CustomBackButton("BACK", Color.decode("#920000"));
+    RoundedButton paidBtn = new RoundedButton("ORDER PAID");
+    RoundedButton notpaidBtn = new RoundedButton("ORDER NOT PAID");
     
     String[] headings = {"Order ID"};
     DefaultTableModel model = new DefaultTableModel(headings,0);
@@ -40,7 +40,10 @@ public class CurrentOrders implements MouseListener, ActionListener{
 
     CurrentOrders(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,600);
+        frame.setResizable(false);
+        frame.setSize(800,650);
+        frame.setLocationRelativeTo(null);
+        frame.getContentPane().setBackground(Color.decode("#a4cbfe"));
         frame.setLayout(null);
         frame.setVisible(true);
         
@@ -52,7 +55,7 @@ public class CurrentOrders implements MouseListener, ActionListener{
         title.setFont(new Font(null,Font.BOLD,20));
         frame.add(title);
         
-        backBtn.setBounds(700,20,70,30);
+        backBtn.setBounds(680,15,80,30);
         backBtn.setFocusable(false);
         backBtn.addActionListener(this);
         frame.add(backBtn);
@@ -72,12 +75,20 @@ public class CurrentOrders implements MouseListener, ActionListener{
         notpaidBtn.addActionListener(this);
         frame.add(notpaidBtn);
 
+        TableCellRenderer rendererFromHeader = table.getTableHeader().getDefaultRenderer();
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) rendererFromHeader;
+        headerRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+        table.getTableHeader().setDefaultRenderer(new TableHeaderColour());
         table.addMouseListener(this);
         ScrollTable.setBounds(30,80,100,200);
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
         frame.add(ScrollTable);
         
+        TableCellRenderer rendererFromoHeader = oTable.getTableHeader().getDefaultRenderer();
+        DefaultTableCellRenderer oheaderRenderer = (DefaultTableCellRenderer) rendererFromoHeader;
+        oheaderRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+        oTable.getTableHeader().setDefaultRenderer(new TableHeaderColour());
         oTableScroll.setBounds(200,80,400,280);
         oTable.getTableHeader().setReorderingAllowed(false);
         oTable.getTableHeader().setResizingAllowed(false);
@@ -109,28 +120,13 @@ public class CurrentOrders implements MouseListener, ActionListener{
         
         if (e.getSource()==orderBtn){
             clearTable();
-            
-            int selectedRowIndex = table.getSelectedRow();
-            String orderID = model.getValueAt(selectedRowIndex,0).toString();
-            String file = "tempcurrentorders.csv";
-            try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
-                Object[] tableLines =  bR.lines().toArray();
-                for (int i = 0; i < tableLines.length;i++){
-                    String line = tableLines[i].toString();
-                    String[] dataRow = line.split(",");
-                    if (dataRow[0].equals(orderID)){
-                        for (int j = 1; j < dataRow.length - 2;j++){
-                            oModel.addRow(new Object[]{dataRow[j]});
-                            amountOrdered = amountOrdered + 1;
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                System.out.println("Error reading file");
-            }
+            readOrder();
         }
         
         else if (e.getSource()==paidBtn){
+            clearTable();
+            readOrder();
+            
             System.out.println("Order Paid - order written to allorders.csv");
             try (FileWriter fW = new FileWriter("allorders.csv",true)){
                 for(int i = 0; i < oModel.getRowCount();i++){
@@ -143,7 +139,9 @@ public class CurrentOrders implements MouseListener, ActionListener{
             }
             
             removeOrderfromFile();
+            long start = System.nanoTime();
             removeOrderfromCustomerFile();
+            System.out.println("Time taken to remove order from customer file: " + (System.nanoTime() - start) + "ns");
             model.removeRow(table.getSelectedRow());
             clearTable();
         }
@@ -156,6 +154,27 @@ public class CurrentOrders implements MouseListener, ActionListener{
         }
     }
 
+    public void readOrder(){
+        int selectedRowIndex = table.getSelectedRow();
+        String orderID = model.getValueAt(selectedRowIndex,0).toString();
+        String file = "tempcurrentorders.csv";
+        try (BufferedReader bR = new BufferedReader(new FileReader(file))) {
+            Object[] tableLines =  bR.lines().toArray();
+            for (int i = 0; i < tableLines.length;i++){
+                String line = tableLines[i].toString();
+                String[] dataRow = line.split(",");
+                if (dataRow[0].equals(orderID)){
+                    for (int j = 1; j < dataRow.length - 2;j++){
+                        oModel.addRow(new Object[]{dataRow[j]});
+                        amountOrdered = amountOrdered + 1;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Error reading file");
+        }
+    }
+    
     public void clearTable(){
         int lastRow = amountOrdered - 1;
         for(int i = lastRow;i>=0;i--){
